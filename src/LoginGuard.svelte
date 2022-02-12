@@ -3,21 +3,31 @@
     import LoginScreen from "./LoginScreen.svelte";
     import App from "./App.svelte";
 
-    import { isLoggedIn } from './auth';
+    import auth from './auth';
 
-    let logged = isLoggedIn();
+    let logged = auth.isLoggedIn();
     let signup = false;
 </script>
 
 <ion-app>
 	{#if !logged}
+    <ion-header translucent>
+        <ion-toolbar>
+            <ion-title>{signup ? "Sign up" : "Login"}</ion-title>
+        </ion-toolbar>
+    </ion-header>
+    <ion-list lines="full">
+        <ion-item>
+            <ion-input placeholder="placeholder" type="text" />
+        </ion-item>
+        <ion-item>
+            <ion-input placeholder="password" type="password" />
+        </ion-item>
         {#if signup}
-        <SignupScreen/>
-        <ion-button on:click="{() => signup = false }">Sign-in instead</ion-button>
-        {:else}
-        <LoginScreen/>
-        <ion-button  on:click="{() => signup = true }">Sign-up instead</ion-button>
         {/if}
+        <ion-button expand="block">Signup</ion-button>
+        </ion-list>
+        <ion-button  on:click="{() => signup = true }">{signup ? "Login instead" : "Sign up instead"}</ion-button>
     {:else}
     <App/>
     {/if}

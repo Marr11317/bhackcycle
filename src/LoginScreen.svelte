@@ -1,3 +1,6 @@
+<script>
+
+</script>
 <ion-content fullscreen>
     <ion-header translucent>
         <ion-toolbar>
