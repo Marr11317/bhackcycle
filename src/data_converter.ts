@@ -18,6 +18,31 @@ export const userConverter = {
 };
 
 // Firestore data converter
+export const tripConverter = {
+    toFirestore: (trip) => {
+        return {
+            id: trip.id,
+            userEmail: trip.user_email,
+            startTime: trip.start_time,
+            endTime: trip.end_time,
+            transportType: trip.transport_type,
+            distance: trip.distance,
+            geopoints: trip.geopoints
+            };
+    },
+    fromFirestore: (snapshot, options) => {
+        const data = snapshot.data(options);
+    return {id: data.id,
+            userEmail: data.user_email,
+            startTime: data.start_time,
+            endTime: data.end_time,
+            transportType: data.transport_type,
+            distance: data.distance,
+            geopoints: data.geopoints};
+    }
+};
+
+// Firestore data converter
 export const rewardConverter = {
     toFirestore: (reward) => {
         return {
