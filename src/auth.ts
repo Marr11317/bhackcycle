@@ -23,7 +23,7 @@ const logout = (): Promise<void> => {
   return firebaseAuth.getAuth().signOut()
 }
 
-export const signUp = async (email: string, password: string): Promise<boolean> => {
+const signUp = async (email: string, password: string): Promise<boolean> => {
   try {
     await firebaseAuth.createUserWithEmailAndPassword(firebaseAuth.getAuth(), email, password)
     return true
@@ -34,4 +34,4 @@ export const signUp = async (email: string, password: string): Promise<boolean> 
   }
 }
 
-export default { logout, login, getCurrentUser, isLoggedIn }
+export default { logout, login, getCurrentUser, isLoggedIn, signUp }

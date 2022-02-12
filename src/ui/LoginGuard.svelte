@@ -14,15 +14,15 @@
       messagingSenderId: "410454368204",
       appId: "1:410454368204:web:16fa9750c1621761564769",
     });
-    
+
     setTimeout(() => {
       logged = auth.isLoggedIn();
-      isInitialized = true
+      isInitialized = true;
     }, 1000);
   });
 
   let isInitialized = false;
-  let logged: boolean | null = null
+  let logged: boolean | null = null;
   let signup = false;
   let currentError = "";
 
@@ -49,10 +49,15 @@
     }
 
     if (signup) {
-      // auth.signup(email, password);
+      if (await auth.signUp(email, password)) {
+        currentError = "";
+        logged = true;
+      } else {
+        currentError = "Signup failed";
+      }
     } else {
-      console.log("login");
       if (await auth.login(email, password)) {
+        currentError = "";
         logged = true;
       } else {
         currentError = "Invalid email or password";
