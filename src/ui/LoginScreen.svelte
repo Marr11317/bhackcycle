@@ -4,7 +4,6 @@
     const dispatch = createEventDispatcher();
 
     function submit() {
-        console.log("here")
         if (!emailInput || !passwordInput) return;
         if (signup && !confirmPasswordInput) return;
 

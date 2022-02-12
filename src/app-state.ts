@@ -1,14 +1,15 @@
-import { writable as svelteWritable, Writable } from 'svelte/store'
+import { writable } from 'svelte/store'
+import type { Writable } from 'svelte/store'
 
 // A wrapper around Sveltle's `writable` to sync with local storage
-const _writable = <T>(key: string, defaultValue?: T): Writable<T> => {
-  const storageValue = JSON.parse(localStorage.getItem(key)!) as T
-
-  const store = svelteWritable<T>(storageValue || defaultValue)
-  store.subscribe(newValue => localStorage.setItem(key, JSON.stringify(newValue)))
+const persistentWritable = <T>(key: string, defaultValue?: T): Writable<T> => {
+  const storageValue = localStorage.getItem(key)
+  const store = writable<T>(storageValue ? JSON.parse(storageValue) as T : defaultValue)
+  store.subscribe(newValue => localStorage.setItem(key, newValue ? JSON.stringify(newValue) : ""))
   return store
 }
 
-const currentTrip = _writable<PendingTrip | null>('currentTrip')
+const loadedUser = writable<User | null>(null)
+const currentTrip = persistentWritable<PendingTrip | null>('currentTrip', null)
 
-export { currentTrip }
+export { currentTrip, loadedUser }
