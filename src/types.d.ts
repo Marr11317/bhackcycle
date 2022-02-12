@@ -1,3 +1,5 @@
+declare module 'svelte-custom-elements';
+
 declare type DatabaseUser = {
   email: string
   name: string
