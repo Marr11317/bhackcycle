@@ -12,11 +12,12 @@
 	   */
     "importsNotUsedAsValues": "error",
     "isolatedModules": true,
+    "strict": true,
     /**
 	   * To have warnings / errors of the Svelte compiler at the
 	   * correct position, enable source maps by default.
 	   */
-    "sourceMap": false,
+    "sourceMap": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,

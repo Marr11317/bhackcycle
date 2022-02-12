@@ -1,19 +1,37 @@
+import * as firebaseAuth from "firebase/auth"
 
-const isLoggedIn = async (): Promise<boolean> => {
-  return false
+const isLoggedIn = (): boolean => {
+  return !!firebaseAuth.getAuth().currentUser
 }
 
-const getCurrentUser = async (): Promise<string | null> => {
-  return null
+const getCurrentUser = (): string | null => {
+  return firebaseAuth.getAuth().currentUser?.email || null
 }
 
-const login = async (): Promise<boolean> => {
-  return false
+const login = async (email: string, password: string): Promise<boolean> => {
+  try {
+    await firebaseAuth.signInWithEmailAndPassword(firebaseAuth.getAuth(), email, password)
+    return true
+  } catch (error) {
+    console.log("Failed to login")
+    console.log(error)
+    return false
+  }
 }
 
-const logout = async (): Promise<void> => {
-
+const logout = (): Promise<void> => {
+  return firebaseAuth.getAuth().signOut()
 }
 
+export const signUp = async (email: string, password: string): Promise<boolean> => {
+  try {
+    await firebaseAuth.createUserWithEmailAndPassword(firebaseAuth.getAuth(), email, password)
+    return true
+  } catch (error) {
+    console.log("Failed to sign up")
+    console.log(error)
+    return false
+  }
+}
 
-export default { isLoggedIn, getCurrentUser, login, logout }
+export default { logout, login, getCurrentUser, isLoggedIn }
