@@ -4,6 +4,7 @@ specifiers:
   '@sveltejs/vite-plugin-svelte': ^1.0.0-next.37
   '@tsconfig/svelte': ^3.0.0
   firebase: ^9.6.6
+  leaflet: ^1.7.1
   svelte: ^3.46.4
   svelte-preprocess: ^4.10.3
   typescript: ^4.5.5
@@ -13,6 +14,7 @@ specifiers:
 dependencies:
   '@tsconfig/svelte': 3.0.0
   firebase: 9.6.6
+  leaflet: 1.7.1
 
 devDependencies:
   '@sveltejs/vite-plugin-svelte': 1.0.0-next.37_svelte@3.46.4+vite@2.8.1
@@ -1431,6 +1433,13 @@ packages:
     resolution: {integrity: sha512-lxpCM3HTvquGxKGzHeknB/sUjuVoUElLlfYnXZT73K8geR9jQbroGlSCFBax9/0mpGoD3kzcMLnOlGQPJJNyqQ==}
     dev: true
 
+<<<<<<< HEAD
+=======
+  /leaflet/1.7.1:
+    resolution: {integrity: sha512-/xwPEBidtg69Q3HlqPdU3DnrXQOvQU/CCHA1tcDQVzOwm91YMYaILjNp7L4Eaw5Z4sOYdbBz6koWyibppd8Zqw==}
+    dev: false
+
+>>>>>>> 558dda1b43958da9a39fdaa3507878d7d5b4a4ea
   /lie/3.3.0:
     resolution: {integrity: sha512-UaiMJzeWRlEujzAuw5LokY1L5ecNQYZKfmyZ9L7wDHb/p5etKaxXhohBcrw0EYby+G/NA52vRSN4N39dxHAIwQ==}
     dependencies:
