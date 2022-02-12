@@ -23,4 +23,15 @@ const logout = (): Promise<void> => {
   return firebaseAuth.getAuth().signOut()
 }
 
+export const signUp = async (email: string, password: string): Promise<boolean> => {
+  try {
+    await firebaseAuth.createUserWithEmailAndPassword(firebaseAuth.getAuth(), email, password)
+    return true
+  } catch (error) {
+    console.log("Failed to sign up")
+    console.log(error)
+    return false
+  }
+}
+
 export default { logout, login, getCurrentUser, isLoggedIn }

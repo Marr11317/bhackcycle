@@ -15,6 +15,8 @@ declare type Trip = {
   geopoints: GeopointWithTimestamp[]
 }
 
+declare type PendingTrip = Omit<Trip, 'endTime' | 'distance'>
+
 declare type Geopoint = {
   lattitude: number
   longitude: number
