@@ -2,13 +2,15 @@ declare type DatabaseUser = {
   email: string
   name: string
   credits: number
+  redeemedRewards: string[]
 }
 
-declare type User = BaseUser & {
+declare type User = {
   email: string
   name: string
   credits: number
   trips: Trip[]
+  redeemedRewards: Reward[]
 }
 
 declare type Trip = {

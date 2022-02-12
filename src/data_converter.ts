@@ -4,14 +4,17 @@ export const userConverter: FirestoreDataConverter<DatabaseUser> = {
   toFirestore: user => ({
     name: user.name,
     email: user.email,
-    credits: user.credits
+    credits: user.credits,
+    redeemed_rewards: user.redeemedRewards
+
   }),
   fromFirestore: (snapshot, options) => {
     const data = snapshot.data(options)
     return {
       name: data.name,
       email: data.email,
-      credits: data.credits
+      credits: data.credits,
+      redeemedRewards: data.redeemed_rewards
     }
   }
 }
@@ -44,6 +47,7 @@ export const tripConverter: FirestoreDataConverter<Trip> = {
 // Firestore data converter
 export const rewardConverter: FirestoreDataConverter<Reward> = {
   toFirestore: reward => ({
+    id: reward.id,
     name: reward.name,
     description: reward.description,
     price: reward.price,

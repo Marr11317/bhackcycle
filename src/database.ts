@@ -7,7 +7,9 @@ const tripDoc = (trip: Trip): DocumentReference<Trip> => doc(db, 'trips', trip.i
 const rewardDoc = (reward: Reward): DocumentReference<Reward> => doc(db, 'rewards', reward.id).withConverter(rewardConverter)
 
 const updateUser = async (user: User): Promise<void> => {
-  await setDoc(userDoc(user.email), user)
+  const { redeemedRewards, ...others } = user
+  const dbUser: DatabaseUser = { ...others, redeemedRewards: redeemedRewards.map(x => x.id) }
+  await setDoc(userDoc(user.email), dbUser)
 }
 
 const updateTrip = async (trip: Trip): Promise<void> => {
@@ -22,9 +24,11 @@ const fetchUser = async (email: string): Promise<User | null> => {
   const docSnap = await getDoc(userDoc(email))
   if (!docSnap.exists()) { return null }
   const baseUser: DatabaseUser = docSnap.data()
+  const { redeemedRewards: rewardIds, ...others } = baseUser
 
   const trips = await fetchUserTrips(baseUser.email)
-  return { ...baseUser, trips: trips }
+  const redeemedRewards = (await fetchAllRewards()).filter(reward => rewardIds.includes(reward.id))
+  return { ...others, trips: trips, redeemedRewards }
 }
 
 const fetchUserTrips = async (userEmail: string): Promise<Trip[]> => {
