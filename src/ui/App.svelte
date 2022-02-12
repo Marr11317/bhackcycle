@@ -2,27 +2,30 @@
 	import Map from "./Map.svelte";
 	import Dashboard from "./Dashboard.svelte";
 
-  import { loadedUser } from "./../app-state";
+	import { loadedUser } from "./../app-state";
 
-  import { onMount } from "svelte";
-  import auth from "./../auth";
-  import database from "./../database";
+	import { onMount } from "svelte";
+	import auth from "./../auth";
+	import database from "./../database";
 
-  onMount(async () => {
-    const result = await database.fetchUser(auth.getCurrentUser()!);
-    loadedUser.set(result);
-  });
-
+	onMount(async () => {
+		const result = await database.fetchUser(auth.getCurrentUser()!);
+		console.log(result);
+		loadedUser.set(result);
+	});
 </script>
 
 <ion-app>
 	<ion-tabs>
 		<ion-tab tab="map">
-      <div>{$loadedUser?.name} ({$loadedUser?.email}) | {$loadedUser?.credits} credits</div>
-			<Map/>
+			<div>
+				{$loadedUser?.name} ({$loadedUser?.email}) | {$loadedUser?.credits}
+				credits
+			</div>
+			<Map />
 		</ion-tab>
 		<ion-tab tab="dashboard">
-			<Dashboard/>
+			<Dashboard />
 		</ion-tab>
 		<!-- <ion-tab tab="settings">
 			<h1 class="ma">Settings Content</h1>

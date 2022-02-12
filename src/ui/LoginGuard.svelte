@@ -27,6 +27,7 @@
   let currentError = "";
 
   function validate(
+    name,
     email: string,
     passwordInput: string,
     confirmPasswordInput: string,
@@ -40,16 +41,16 @@
   }
 
   async function submit(event) {
-    const { email, password, confirmPassword, signup } = event.detail;
+    const { name, email, password, confirmPassword, signup } = event.detail;
 
-    const error = validate(email, password, confirmPassword, signup);
+    const error = validate(name, email, password, confirmPassword, signup);
     if (error != "") {
       currentError = error;
       return;
     }
 
     if (signup) {
-      if (await auth.signUp(email, password)) {
+      if (await auth.signUp(name, email, password)) {
         currentError = "";
         logged = true;
       } else {

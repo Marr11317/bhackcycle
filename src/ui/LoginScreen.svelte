@@ -8,6 +8,7 @@
         if (signup && !confirmPasswordInput) return;
 
         dispatch("submit", {
+            name: nameInput ? nameInput.value : undefined,
             email: emailInput.value,
             password: passwordInput.value,
             confirmPassword: confirmPasswordInput
@@ -19,7 +20,13 @@
     export let signup = false;
     export let errorNote = "";
 
-    let emailInput, passwordInput, confirmPasswordInput;
+    let nameInput, emailInput, passwordInput, confirmPasswordInput;
+
+    function handleKeyPress(event) {
+        if (event.key === "Enter") {
+            submit();
+        }
+    }
 </script>
 
 <ion-header translucent>
@@ -31,6 +38,16 @@
     {#if errorNote !== ""}
         <ion-item>
             <ion-label>{errorNote}</ion-label>
+        </ion-item>
+    {/if}
+    {#if signup}
+        <ion-item>
+            <ion-input
+                bind:this={nameInput}
+                placeholder="Full Name"
+                type="text"
+                required
+            />
         </ion-item>
     {/if}
     <ion-item>
@@ -48,6 +65,7 @@
             placeholder="password"
             type="password"
             required
+            on:keypress={!signup ? handleKeyPress : undefined}
         />
     </ion-item>
     {#if signup}
@@ -57,6 +75,7 @@
                 placeholder="confirm password"
                 type="password"
                 required
+                on:keypress={handleKeyPress}
             />
         </ion-item>
     {/if}
