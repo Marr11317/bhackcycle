@@ -9,5 +9,6 @@ const _writable = <T>(key: string, defaultValue?: T): Writable<T> => {
   return store
 }
 
-const currentTrip = _writable('currentTrip')
+const currentTrip = _writable<PendingTrip | null>('currentTrip')
+
 export { currentTrip }

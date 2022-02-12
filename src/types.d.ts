@@ -1,7 +1,10 @@
-declare type User = {
+declare type BaseUser = {
   email: string
   name: string
   credits: number
+}
+
+declare type User = BaseUser & {
   trips: Trip[]
 }
 
@@ -35,6 +38,7 @@ declare type RewardProvider = {
 }
 
 declare type Reward = {
+  id: string
   name: string
   description: string
   price: number

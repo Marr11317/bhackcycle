@@ -1,58 +1,38 @@
-import {collection, doc, addDoc, getDoc, getDocs, Firestore, getFirestore} from 'firebase/firestore';
-import {rewardConverter, userConverter} from './data_converter';
-interface Location{
-    north: number;
-    east: number;
-}
-const db = getFirestore();
-export async function addUser(user: User){
-    await addDoc(collection(db, "users"), {
-        name: user.name,
-        email: user.email,
-        trips: user.trips,
-        credits: user.credits,
-      });
+import { collection, doc, setDoc, getDoc, getDocs, getFirestore, DocumentReference } from 'firebase/firestore'
+import { rewardConverter, userConverter, tripConverter } from './data_converter'
+
+const db = getFirestore()
+const userDoc = (email: string): DocumentReference<BaseUser> => doc(db, 'users', email).withConverter(userConverter)
+const tripDoc = (trip: Trip): DocumentReference<Trip> => doc(db, 'trips', trip.id).withConverter(tripConverter)
+const rewardDoc = (reward: Reward): DocumentReference<Reward> => doc(db, 'rewards', reward.id).withConverter(rewardConverter)
+
+const updateUser = async (user: User): Promise<void> => {
+  await setDoc(userDoc(user.email), user)
 }
 
-export async function addTrip(trip: Trip) {
-    await addDoc(collection(db, "users"), {
-        distance: trip.distance,
-        end_time: trip.endTime,
-        geoPoints: trip.geopoints,
-        id: trip.id,
-        transport_type: trip.transportType,
-        startTime: trip.startTime,
-        endTime: trip.endTime,
-      });
+const updateTrip = async (trip: Trip): Promise<void> => {
+  await setDoc(tripDoc(trip), trip)
 }
 
-export async function addReward(reward: Reward) {
-    await addDoc(collection(db, "rewards"), {
-        name: reward.name,
-        description: reward.description,
-        price: reward.price,
-        provider: reward.provider,
-        expiration: reward.expiration,
-        remaining_units: reward.remainingUnits
-    })
+const updateReward = async (reward: Reward): Promise<void> => {
+  await setDoc(rewardDoc(reward), reward)
 }
 
-export async function fetchUser(id: string): Promise<User> {
-    const docRef = doc(db, "users", id).withConverter(userConverter);
-    const docSnap = await getDoc(docRef);
-    if(docSnap.exists()){
-        const user = docSnap.data();
-        return user;
+const fetchUser = async (email: string): Promise<BaseUser | null> => {
+  const docSnap = await getDoc(userDoc(email))
+  if (!docSnap.exists()) {return null}
+  return docSnap.data()
+}
+
+const fetchRewards = async (id: string): Promise<Reward[]> => {
+  const rewards: Reward[] = []
+  const querySnapshot = await getDocs(collection(db, "rewards").withConverter(rewardConverter));
+  (querySnapshot).forEach((doc) => {
+    if (doc.exists()) {
+      rewards.push(doc.data())
     }
+  })
+  return rewards
 }
 
-export async function fetchRewards(id: string): Promise<Reward[]> {
-    const rewards: Reward[] = [];
-    const querySnapshot = await getDocs(collection(db, "rewards").withConverter(rewardConverter));
-    (querySnapshot).forEach((doc) => {
-        if(doc.exists()) {
-            rewards.push(doc.data());
-        }
-    })
-    return rewards;
-}
+export default { fetchUser, fetchRewards, updateUser, updateTrip, updateReward }
