@@ -1,6 +1,6 @@
 /// <reference types="svelte" />
 
-import LoginGuard from './LoginGuard.svelte';
+import LoginGuard from './ui/LoginGuard.svelte';
 import { initializeApp as initializeFirebaseApp } from "firebase/app";
 
 initializeFirebaseApp({

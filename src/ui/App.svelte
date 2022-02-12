@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Map from "./maps/Map.svelte";
+	import Map from "./Map.svelte";
 </script>
 
 <ion-app>

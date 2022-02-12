@@ -2,7 +2,7 @@
     import LoginScreen from "./LoginScreen.svelte";
     import App from "./App.svelte";
 
-    import auth from "./auth";
+    import auth from "../auth";
 
     let logged = auth.isLoggedIn();
     let signup = false;
