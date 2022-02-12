@@ -18,7 +18,7 @@
             zoomOffset: -1,
             accessToken: 'pk.eyJ1IjoicmVkNWg0ZDB3IiwiYSI6ImNrems4bzhzMzRrcG4yeHByYTgwN2draHcifQ.356a0A2cfoy3zrhq-IW_rA'
         }).addTo(m);
-        m.setView([0,0], 14);
+        m.setView([45.508888,-73.561668], 14);
         return m;
     }
 
