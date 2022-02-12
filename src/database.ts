@@ -37,13 +37,14 @@ export async function addReward(reward: Reward) {
     })
 }
 
-export async function fetchUser(id: string): Promise<User> {
+export async function fetchUser(id: string): Promise<User | null> {
     const docRef = doc(db, "users", id).withConverter(userConverter);
     const docSnap = await getDoc(docRef);
     if(docSnap.exists()){
         const user = docSnap.data();
         return user;
     }
+    return null;
 }
 
 export async function fetchRewards(id: string): Promise<Reward[]> {
