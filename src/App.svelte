@@ -1,6 +1,5 @@
 <script lang="ts">
 	import Map from "./maps/Map.svelte";
-	import Log from "./LoginScreen.svelte";
 </script>
 
 <ion-app>
@@ -12,7 +11,7 @@
 			<h1 class="ma">Log Content</h1>
 		</ion-tab>
 		<ion-tab tab="settings">
-			<Log/>
+			<h1 class="ma">Settings Content</h1>
 		</ion-tab>
 
 		<ion-tab-bar slot="bottom">
