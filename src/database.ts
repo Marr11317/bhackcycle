@@ -1,17 +1,12 @@
-import {collection, doc, addDoc, getDoc, getDocs, Firestore, getFirestore} from 'firebase/firestore';
+import {collection, doc, addDoc, getDoc, getDocs, setDoc, getFirestore} from 'firebase/firestore';
 import {rewardConverter, userConverter} from './data_converter';
 interface Location{
     north: number;
     east: number;
 }
 const db = getFirestore();
-export async function addUser(user: User){
-    await addDoc(collection(db, "users"), {
-        name: user.name,
-        email: user.email,
-        trips: user.trips,
-        credits: user.credits,
-      });
+export async function addUser(user: User, id: string){
+    await setDoc(doc(db, "users", id).withConverter(userConverter), user);
 }
 
 export async function addTrip(trip: Trip) {
