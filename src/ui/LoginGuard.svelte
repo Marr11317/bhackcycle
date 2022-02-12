@@ -35,10 +35,15 @@
         }
 
         if (signup) {
-            // auth.signup(email, password);
+            if (await auth.signUp(email, password)) {
+                currentError = "";
+                logged = true;
+            } else {
+                currentError = "Signup failed";
+            }
         } else {
-            console.log("login");
             if (await auth.login(email, password)) {
+                currentError = "";
                 logged = true;
             }
             else {
