@@ -1,4 +1,5 @@
 import * as firebaseAuth from "firebase/auth"
+import database from "./database";
 
 const isLoggedIn = (): boolean => {
   return !!firebaseAuth.getAuth().currentUser
@@ -23,9 +24,10 @@ const logout = (): Promise<void> => {
   return firebaseAuth.getAuth().signOut()
 }
 
-const signUp = async (email: string, password: string): Promise<boolean> => {
+const signUp = async (name: string, email: string, password: string): Promise<boolean> => {
   try {
     await firebaseAuth.createUserWithEmailAndPassword(firebaseAuth.getAuth(), email, password)
+    await database.updateUser({email: email, name: name, credits: 0, redeemedRewards: [], trips: []})
     return true
   } catch (error) {
     console.log("Failed to sign up")
