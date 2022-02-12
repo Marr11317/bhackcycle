@@ -2,7 +2,7 @@ import { collection, doc, setDoc, getDoc, getDocs, getFirestore, DocumentReferen
 import { rewardConverter, userConverter, tripConverter } from './data_converter'
 
 const db = getFirestore()
-const userDoc = (email: string): DocumentReference<BaseUser> => doc(db, 'users', email).withConverter(userConverter)
+const userDoc = (email: string): DocumentReference<DatabaseUser> => doc(db, 'users', email).withConverter(userConverter)
 const tripDoc = (trip: Trip): DocumentReference<Trip> => doc(db, 'trips', trip.id).withConverter(tripConverter)
 const rewardDoc = (reward: Reward): DocumentReference<Reward> => doc(db, 'rewards', reward.id).withConverter(rewardConverter)
 
@@ -18,21 +18,29 @@ const updateReward = async (reward: Reward): Promise<void> => {
   await setDoc(rewardDoc(reward), reward)
 }
 
-const fetchUser = async (email: string): Promise<BaseUser | null> => {
+const fetchUser = async (email: string): Promise<User | null> => {
   const docSnap = await getDoc(userDoc(email))
-  if (!docSnap.exists()) {return null}
-  return docSnap.data()
+  if (!docSnap.exists()) { return null }
+  const baseUser: DatabaseUser = docSnap.data()
+
+  const trips = await fetchUserTrips(baseUser.email)
+  return { ...baseUser, trips: trips }
 }
 
-const fetchRewards = async (id: string): Promise<Reward[]> => {
+const fetchUserTrips = async (userEmail: string): Promise<Trip[]> => {
+  const trips: Trip[] = []
+
+  const snap = await getDocs(collection(db, "trips").withConverter(tripConverter))
+  snap.forEach(doc => doc.exists() && trips.push(doc.data()))
+  return trips.filter(trip => trip.userEmail === userEmail)
+}
+
+const fetchAllRewards = async (): Promise<Reward[]> => {
   const rewards: Reward[] = []
-  const querySnapshot = await getDocs(collection(db, "rewards").withConverter(rewardConverter));
-  (querySnapshot).forEach((doc) => {
-    if (doc.exists()) {
-      rewards.push(doc.data())
-    }
-  })
+
+  const snap = await getDocs(collection(db, "rewards").withConverter(rewardConverter))
+  snap.forEach(doc => doc.exists() && rewards.push(doc.data()))
   return rewards
 }
 
-export default { fetchUser, fetchRewards, updateUser, updateTrip, updateReward }
+export default { fetchUser, fetchAllRewards, updateUser, updateTrip, updateReward }
