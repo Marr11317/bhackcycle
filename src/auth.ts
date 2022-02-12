@@ -1,14 +1,14 @@
 import firebaseAuth from "firebase/auth"
 
-const isLoggedIn = (): boolean => {
+export const isLoggedIn = (): boolean => {
   return !!firebaseAuth.getAuth().currentUser
 }
 
-const getCurrentUser = (): string | null => {
+export const getCurrentUser = (): string | null => {
   return firebaseAuth.getAuth().currentUser?.email || null
 }
 
-const login = async (email: string, password: string): Promise<boolean> => {
+export const login = async (email: string, password: string): Promise<boolean> => {
   try {
     await firebaseAuth.signInWithEmailAndPassword(firebaseAuth.getAuth(), email, password)
     return true
@@ -19,9 +19,6 @@ const login = async (email: string, password: string): Promise<boolean> => {
   }
 }
 
-const logout = (): Promise<void> => {
+export const logout = (): Promise<void> => {
   return firebaseAuth.getAuth().signOut()
 }
-
-
-export default { isLoggedIn, getCurrentUser, login, logout }

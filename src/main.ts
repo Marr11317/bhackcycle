@@ -1,6 +1,6 @@
 /// <reference types="svelte" />
 
-import App from './App.svelte';
+import LoginGuard from './LoginGuard.svelte';
 import { initializeApp as initializeFirebaseApp } from "firebase/app";
 
 initializeFirebaseApp({
@@ -12,7 +12,7 @@ initializeFirebaseApp({
   appId: "1:410454368204:web:16fa9750c1621761564769"
 });
 
-const app = new App({
+const app = new LoginGuard({
 	target: document.body
 });
 
