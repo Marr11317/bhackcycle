@@ -23,6 +23,7 @@
 		"@ionic/core": "^6.0.7",
 		"@tsconfig/svelte": "^3.0.0",
 		"firebase": "^9.6.6",
-		"leaflet": "^1.7.1"
+		"leaflet": "^1.7.1",
+		"svelte-custom-elements": "^1.0.2"
 	}
 }
