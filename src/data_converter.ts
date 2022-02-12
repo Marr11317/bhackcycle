@@ -10,10 +10,13 @@ export const userConverter = {
     },
     fromFirestore: (snapshot, options) => {
         const data = snapshot.data(options);
-        return {name: data.name,
+        return {
+                name: data.name,
                 email: data.email,
                 trips: data.trips,
-                credits: data.credits};
+                credits: data.credits,
+                redeemedRewards: data.redeemed_rewards
+            };
     }
 };
 
@@ -46,6 +49,7 @@ export const tripConverter = {
 export const rewardConverter = {
     toFirestore: (reward) => {
         return {
+            id: reward.id,
             name: reward.name,
             description: reward.description,
             price: reward.price,
@@ -56,7 +60,8 @@ export const rewardConverter = {
     },
     fromFirestore: (snapshot, options) => {
         const data = snapshot.data(options);
-        return {name: data.name,
+        return {id: data.id,
+                name: data.name,
                 description: data.description,
                 price: data.price,
                 provider: data.provider,

@@ -10,7 +10,7 @@ export async function addUser(user: User, id: string){
 }
 
 export async function addTrip(trip: Trip) {
-    await addDoc(collection(db, "users"), {
+    await addDoc(collection(db, "trip"), {
         distance: trip.distance,
         end_time: trip.endTime,
         geoPoints: trip.geopoints,

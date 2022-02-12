@@ -3,6 +3,7 @@ declare type User = {
   name: string
   credits: number
   trips: Trip[]
+  redeemedRewards: string[]
 }
 
 declare type Trip = {
@@ -35,6 +36,7 @@ declare type RewardProvider = {
 }
 
 declare type Reward = {
+  id: string
   name: string
   description: string
   price: number
