@@ -17,6 +17,7 @@
 		"defaults"
 	],
 	"dependencies": {
-		"@tsconfig/svelte": "^3.0.0"
+		"@tsconfig/svelte": "^3.0.0",
+		"firebase": "^9.6.6"
 	}
 }
