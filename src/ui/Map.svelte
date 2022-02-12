@@ -2,6 +2,7 @@
     import L from "leaflet";
     import {onMount} from "svelte";
     import { Geolocation } from '@capacitor/geolocation';
+    import { currentTrip } from "../app-state";
 
     let carte;
 
@@ -73,12 +74,31 @@
             carte.invalidateSize(); }
     }
 
+    function drawCurrentTrip() {
+        if(carte) {
+            var pointList = $currentTrip.geopoints
+                .sort((a, b) => a.timestamp < b.timestamp ? -1 : 1)
+                .map( x => L.LatLng(x.location.lattitude, x.location.longitude));
+            var polyLine = new L.polyLine(pointList,
+            {
+                color: "red",
+                weight: 3,
+                opacity: 0.5,
+                smoothFactor: 1
+            });
+            polyLine.addTo(carte)
+        }
+    }
+
     onMount(() => {
             
             setTimeout(
                 async () => {
                     const initialView = await Geolocation.getCurrentPosition();
                     carte.setView([ initialView.coords.latitude, initialView.coords.longitude]);
+                    if($currentTrip) {
+                        drawCurrentTrip();
+                    }
                     resizeMap();
                 },
             300);
@@ -117,4 +137,8 @@
 
 
 
-<div class="map" style="height:100%;width:100%;" use:mapAction />
+<div class="map" style="height:100%;width:100%;" use:mapAction >
+    <div class="leaflet-bottom">
+        <ion-fab-button></ion-fab-button>
+    </div>
+</div>
