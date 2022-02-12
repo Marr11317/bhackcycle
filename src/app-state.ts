@@ -12,4 +12,12 @@ const persistentWritable = <T>(key: string, defaultValue?: T): Writable<T> => {
 const loadedUser = writable<User | null>(null)
 const currentTrip = persistentWritable<PendingTrip | null>('currentTrip', null)
 
-export { currentTrip, loadedUser }
+const addTripEndpoint = (location: Geopoint) => {
+  currentTrip.update(trip => {
+    if (!trip) { return null }
+    trip.geopoints = [...trip.geopoints, { timestamp: new Date(), location }]
+    return trip
+  })
+}
+
+export { currentTrip, loadedUser, addTripEndpoint }

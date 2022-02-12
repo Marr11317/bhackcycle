@@ -4,6 +4,7 @@
   import auth from "../auth";
   import { onMount } from "svelte";
   import { initializeApp as initializeFirebaseApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
 
   onMount(() => {
     initializeFirebaseApp({
@@ -15,10 +16,10 @@
       appId: "1:410454368204:web:16fa9750c1621761564769",
     });
 
-    setTimeout(() => {
-      logged = auth.isLoggedIn();
-      isInitialized = true;
-    }, 1000);
+    getAuth().onAuthStateChanged(user => {
+      logged = !!user
+      isInitialized = true
+    })
   });
 
   let isInitialized = false;
