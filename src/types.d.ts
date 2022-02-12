@@ -38,5 +38,5 @@ declare type Reward = {
   price: number
   provider: RewardProvider
   expiration: Date | null
-  reminaingUnits: number | null
+  remainingUnits: number | null
 }
