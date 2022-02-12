@@ -26,3 +26,9 @@
 		</ion-tab-bar>
 	</ion-tabs>
 </ion-app>
+
+<style>
+	.ma {
+		margin: auto;
+	}
+</style>
