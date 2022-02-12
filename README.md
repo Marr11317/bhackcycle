@@ -4,7 +4,7 @@ Une application utilisant Svelte et Ionic
 
 ## Getting started
 
-The repo uses `pnpm` the fast npm.
+The repo uses `pnpm`, the fast npm.
 
 ```shell
 npm i -g pnpm
