@@ -5,7 +5,7 @@
 <ion-app>
 	<ion-tabs>
 		<ion-tab tab="map">
-			<Map></Map>
+			<Map/>
 		</ion-tab>
 		<ion-tab tab="log">
 			<h1 class="ma">Log Content</h1>

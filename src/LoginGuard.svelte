@@ -8,6 +8,10 @@
     let signup = false;
     let currentError = "";
 
+    setTimeout(() => {
+        logged = auth.isLoggedIn();
+    }, 1000);
+
     function validate(
         email: string,
         passwordInput: string,
@@ -33,8 +37,12 @@
         if (signup) {
             // auth.signup(email, password);
         } else {
+            console.log("login");
             if (await auth.login(email, password)) {
                 logged = true;
+            }
+            else {
+                currentError = "Invalid email or password";
             }
         }
     }
@@ -42,7 +50,7 @@
 
 <ion-app>
     {#if !logged}
-        <LoginScreen bind:error={currentError} bind:signup on:submit={submit} />
+        <LoginScreen errorNote={currentError} bind:signup on:submit={submit} />
     {:else}
         <App />
     {/if}
