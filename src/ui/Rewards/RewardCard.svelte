@@ -1,13 +1,25 @@
 <script>
+    import { loadedUser } from "../../app-state";
+
     export let reward;
     export let isRedeemed = false;
-    export let playerPoints = 100;
+    let playerPoints = 100;
 
-    function tryToRedeem(playerPoints) {
-        if(playerPoints >= reward.price){
-            playerPoints -= reward.price;
-            isRedeemed = !isRedeemed;
+    loadedUser.subscribe((loadedUser) =>{
+        if(loadedUser !== null){
+            playerPoints = loadedUser.credits;
         }
+    })
+    function tryToRedeem(playerPoints) {
+        if(!isRedeemed && reward.remainingUnits !== 0 && playerPoints >= reward.price){
+            isRedeemed = true;
+            loadedUser.update(loadedUser =>{
+                loadedUser.credits -= reward.price;
+                return loadedUser;
+            });    
+            reward.remainingUnits--;
+        }
+
         console.log("clicked on reward");
     }
 </script>
