@@ -15,12 +15,14 @@ declare type User = {
   redeemedRewards: Reward[]
 }
 
+declare type TransportType = "bicycle" | "walk" | "publicTransport"
+
 declare type Trip = {
   id: string
   userEmail: string
   startTime: Date
   endTime: Date | null
-  transportType: string
+  transportType: TransportType
   distance: number | null
   geopoints: GeopointWithTimestamp[]
 }
@@ -29,7 +31,7 @@ declare type PendingTrip = {
   id: string
   userEmail: string
   startTime: string
-  transportType: string
+  transportType: TransportType
   geopoints: GeopointWithTimestamp[]
 }
 

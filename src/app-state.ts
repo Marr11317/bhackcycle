@@ -34,4 +34,23 @@ const computeTripDistance = (geopoints: GeopointWithTimestamp[]): number => {
   return distance
 }
 
-export { logged, currentTrip, loadedUser, allRewards, addTripEndpoint, computeTripDistance }
+const averagePosition = (trip: Trip): Geopoint => {
+  let sum = trip.geopoints
+  .map((a) => {
+    return {
+      latitude: a.location.latitude, 
+      longitude: a.location.longitude
+    }
+  })
+  .reduce((a, b) => {
+    return {
+      latitude: a.latitude + b.latitude,
+      longitude: b.longitude + a.longitude
+    }
+  });
+  sum.latitude /= trip.geopoints.length;
+  sum.longitude /= trip.geopoints.length;
+  return sum;
+}
+
+export { logged, currentTrip, loadedUser, allRewards, addTripEndpoint, averagePosition, computeTripDistance }

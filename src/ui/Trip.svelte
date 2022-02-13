@@ -3,22 +3,11 @@
     let nodeRef;
     import { computeTripDistance } from "../app-state";
     import database from './../database';
-    function iconNameForTransportType(transportType: string) {
-        switch (transportType) {
-            case "bicycle":
-                return "bicycle";
-            case "walk":
-                return "walk";
-            case "public_transport":
-                return "bus";
-            default:
-                return "walk";
-        }
-    }
     function deleteTrip(){
         console.log("deleted");
         database.deleteTrip(trip.id);
     }
+    import { iconNameForTransportType } from "./utilities";
 </script>
 
 <ion-item bind:this={nodeRef}>

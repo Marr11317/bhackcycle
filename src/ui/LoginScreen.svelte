@@ -20,9 +20,9 @@
     export let signup = false;
     export let errorNote = "";
 
-    let nameInput, emailInput, passwordInput, confirmPasswordInput;
+    let nameInput: any, emailInput: any, passwordInput: any, confirmPasswordInput: any;
 
-    function handleKeyPress(event) {
+    function handleKeyPress(event: KeyboardEvent) {
         if (event.key === "Enter") {
             submit();
         }
