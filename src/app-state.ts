@@ -1,5 +1,6 @@
 import { writable } from 'svelte/store'
 import type { Writable } from 'svelte/store'
+import haversineDistance from 'haversine-distance'
 
 // A wrapper around Sveltle's `writable` to sync with local storage
 const persistentWritable = <T>(key: string, defaultValue?: T): Writable<T> => {
@@ -9,32 +10,14 @@ const persistentWritable = <T>(key: string, defaultValue?: T): Writable<T> => {
   return store
 }
 
-const _debugTrip = (): PendingTrip => {
-  const startTime = new Date()
-  const time1= new Date()
-  const time2 = new Date()
-  const time3 = new Date()
-  
-  startTime.setHours(8, 0, 0, 0)
-  time1.setHours(8, 0, 0, 0)
-  time2.setHours(8, 0, 5, 0)
-  time3.setHours(8, 0, 10, 0)
-
-  return {
-    id: '1',
-    userEmail: 'suptom3@gmail.com',
-    startTime: startTime,
-    transportType: 'velo',
-    geopoints: [
-      { location: { lattitude: 1, longitude: 1 }, timestamp: time1 },
-      { location: { lattitude: 1, longitude: 2 }, timestamp: time2 },
-      { location: { lattitude: 1, longitude: 3 }, timestamp: time3 },
-    ]
-  }
-}
-
 const loadedUser = writable<User | null>(null)
-const currentTrip = persistentWritable<PendingTrip | null>('currentTrip', _debugTrip())
+const currentTrip = persistentWritable<PendingTrip | null>('currentTrip', {
+  id: '1',
+  userEmail: 'suptom3@gmail.com',
+  startTime: new Date(),
+  transportType: 'velo',
+  geopoints: []
+})
 
 const addTripEndpoint = (location: Geopoint) => {
   currentTrip.update(trip => {
@@ -44,4 +27,14 @@ const addTripEndpoint = (location: Geopoint) => {
   })
 }
 
-export { currentTrip, loadedUser, addTripEndpoint }
+const computeTripDistance = (geopoints: GeopointWithTimestamp[]): number => {
+  if (!geopoints.length) { return 0 }
+
+  let distance = 0
+  for (let i = 1; i < geopoints.length - 1; ++i) {
+    distance += haversineDistance(geopoints[i - 1].location, geopoints[i].location)
+  }
+  return distance
+}
+
+export { currentTrip, loadedUser, addTripEndpoint, computeTripDistance }
