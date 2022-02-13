@@ -1,6 +1,6 @@
 # Pricycle
 
-An app where you get paid to save carbon.
+An app where you get rewards for saving carbon.
 
 ## Getting started
 
