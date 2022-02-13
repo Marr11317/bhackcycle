@@ -16,6 +16,7 @@
   let carte: L.Map | null = null;
   let trajetActuel: L.Polyline | null = null;
   let circleMarker: L.CircleMarker | null = null;
+  let currentPositionMarker: L.CircleMarker | null = null;
 
   const getCurrentPosition = async (): Promise<LatLngLiteral> => {
     const result = await Geolocation.getCurrentPosition();
@@ -60,6 +61,11 @@
     circleMarker?.removeFrom(carte);
     trajetActuel?.removeFrom(carte);
 
+    currentPositionMarker = L.circleMarker(currentPosition, {
+      color: "red",
+      weight: 2,
+      opacity: 0.7,
+    });
     circleMarker = L.circleMarker(currentPosition, {
       color: "red",
       weight: 2,
@@ -71,7 +77,7 @@
       opacity: 0.5,
       smoothFactor: 1,
     });
-
+    currentPositionMarker.addTo(carte);
     circleMarker.addTo(carte);
     trajetActuel.addTo(carte);
   };
@@ -88,7 +94,14 @@
         x.location.longitude,
       ]);
 
-    circleMarker = L.circleMarker(pointList[pointList.length - 1], {
+    
+    circleMarker = L.circleMarker(pointList[0], {
+      color: "red",
+      weight: 2,
+      opacity: 0.7,
+    });
+
+    currentPositionMarker = L.circleMarker(pointList[pointList.length - 1], {
       color: "red",
       weight: 2,
       opacity: 0.7,
@@ -101,6 +114,7 @@
     });
 
     circleMarker.addTo(carte);
+    currentPositionMarker.addTo(carte);
     trajetActuel.addTo(carte);
   };
 
@@ -137,6 +151,7 @@
     if (carte) {
       trajetActuel?.removeFrom(carte);
       circleMarker?.removeFrom(carte);
+      currentPositionMarker?.removeFrom(carte);
     }
 
     loadedUser.update((user) => {

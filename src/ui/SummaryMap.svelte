@@ -4,7 +4,7 @@
 
     import "../../node_modules/leaflet/dist/leaflet.css";
   
-    import L, { type LatLngLiteral, type LatLngTuple } from "leaflet";
+    import L from "leaflet";
     import { onMount } from "svelte";
     import {
       averagePosition
@@ -41,10 +41,6 @@
     };
   
     const resizeMap = () => carte?.invalidateSize();
-  
-    const closePreview = () => {
-
-    }
 
     const drawTrip = () => {
       if (!carte) {
@@ -82,32 +78,20 @@
   
     onMount(() => {
       setTimeout(async () => {
-        var center = averagePosition(trip)
-        carte?.setView([center.latitude, center.longitude]);
-        drawTrip();
+        if(trip) {
+            console.log(trip)
+            var center = averagePosition(trip)
+            carte?.setView([center.latitude, center.longitude]);
+            drawTrip();
+        }
         resizeMap();
       }, 300);
     });
   </script>
   
   <svelte:window on:resize={resizeMap} />
-  {#if trip}
-  <ion-content fullscreen>
-    <ion-fab
-      horizontal="left"
-      vertical="top"
-      slot="fixed"
-      on:click={closePreview}
-      style="pointer-events: auto;"
-    >
-    <ion-fab-button>
-        <ion-icon name="close" />
-      </ion-fab-button>
-    </ion-fab>
-  
-    <div class="map" style="height: 100%; width: 100%;" use:createMap />
-  </ion-content>
-  {/if}
+
+  <div class="map" style="height: 100%; width: 100%;" use:createMap />
   
   <style>
     .map :global(.marker-text) {

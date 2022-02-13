@@ -34,6 +34,7 @@
         <ion-title>{signup ? "Sign up" : "Login"}</ion-title>
     </ion-toolbar>
 </ion-header>
+<ion-icon style="position: fixed; left: calc(50% - 64px); margin-right: auto; top: 15%; font-size: 128px; color: lightgray;" name="bicycle"></ion-icon>
 <ion-list lines="full">
     {#if errorNote !== ""}
         <ion-item>
