@@ -96,6 +96,7 @@
         x.location.longitude,
       ]);
 
+
     circleMarker = L.circleMarker(pointList[0], {
       color: "red",
       weight: 2,
@@ -183,7 +184,8 @@
         latitude: currentPosition.lat,
         longitude: currentPosition.lng,
       });
-
+      currentPositionMarker?.setLatLng(await getCurrentPosition());
+      
       if ($currentTrip.geopoints.length == 0) {
         initCurrentTrip(currentPosition);
       } else {
@@ -197,7 +199,7 @@
     resizeMap();
   }
 
-  onMount( () => {
+  onMount(() => {
     setTimeout(async () => {
       const t0 = Date.now();
       const currentPosition = await getCurrentPosition();
@@ -258,12 +260,7 @@
     </ion-fab>
   {/if}
 
-  {#if !isInitialized}
-    <div class="loading">
-      <div>Loading...</div>
-    </div>
-  {/if}
-  <div class="map" use:createMap />
+  <div class="map" style="height: 100%; width: 100%;" use:createMap />
 </ion-content>
 
 <style>
@@ -279,23 +276,5 @@
   .map :global(.map-marker) {
     width: 30px;
     transform: translateX(-50%) translateY(-25%);
-  }
-
-  .map {
-    height: 100%;
-    width: 100%;
-  }
-
-  .loading {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 10000;
-    background-color: white;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
   }
 </style>
