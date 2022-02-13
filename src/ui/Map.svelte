@@ -2,9 +2,11 @@
     import L from "leaflet";
     import {onMount} from "svelte";
     import { Geolocation } from '@capacitor/geolocation';
-    import { currentTrip } from "../app-state";
+    import { addTripEndpoint, currentTrip } from "../app-state";
+import { GeoPoint } from "firebase/firestore/lite";
 
     let carte;
+    let trajetActuel;
 
     
 
@@ -74,29 +76,75 @@
             carte.invalidateSize(); }
     }
 
-    function drawCurrentTrip() {
+    function initCurrentTrip() {
         if(carte) {
             var pointList = $currentTrip.geopoints
                 .sort((a, b) => a.timestamp < b.timestamp ? -1 : 1)
-                .map( x => L.LatLng(x.location.lattitude, x.location.longitude));
-            var polyLine = new L.polyLine(pointList,
+                .map( x => [x.location.latitude, x.location.longitude]);
+            var origin = pointList[0];
+            L.circleMarker(origin, 
+            {
+                color: "red",
+                weight: 2,
+                opacity: 0.7
+            }).addTo(carte);
+            trajetActuel = L.polyline(pointList,
             {
                 color: "red",
                 weight: 3,
                 opacity: 0.5,
                 smoothFactor: 1
             });
-            polyLine.addTo(carte)
+            trajetActuel.addTo(carte);
         }
     }
 
+    function drawCurrentTrip() {
+        if(carte) {
+            var pointList = $currentTrip.geopoints
+                .sort((a, b) => a.timestamp < b.timestamp ? -1 : 1)
+                .map( x => [x.location.latitude, x.location.longitude]);
+            var origin = pointList[0];
+            L.circleMarker(origin, 
+            {
+                color: "red",
+                weight: 2,
+                opacity: 0.7
+            }).addTo(carte);
+            trajetActuel = L.polyline(pointList,
+            {
+                color: "red",
+                weight: 3,
+                opacity: 0.5,
+                smoothFactor: 1
+            });
+            trajetActuel.addTo(carte);
+        }
+    }
+
+    async function updateTrip() {
+        if($currentTrip.geopoints.length == 0)
+        var position = await Geolocation.getCurrentPosition()
+        var geopoint = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+        }
+        addTripEndpoint(geopoint);
+        trajetActuel.addLatLng([position.coords.latitude, position.coords.longitude]);
+    }
+
     onMount(() => {
-            
+            setInterval(() => {
+                if($currentTrip) {
+                    updateTrip();
+                }
+            }, 3000);
             setTimeout(
                 async () => {
                     const initialView = await Geolocation.getCurrentPosition();
                     carte.setView([ initialView.coords.latitude, initialView.coords.longitude]);
-                    if($currentTrip) {
+                    console.log($currentTrip)
+                    if($currentTrip?.geopoints.length) {
                         drawCurrentTrip();
                     }
                     resizeMap();
@@ -139,6 +187,6 @@
 
 <div class="map" style="height:100%;width:100%;" use:mapAction >
     <div class="leaflet-bottom">
-        <ion-fab-button></ion-fab-button>
+        <ion-fab-button on:click={initCurrentTrip()}></ion-fab-button>
     </div>
 </div>
