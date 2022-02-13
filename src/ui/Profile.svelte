@@ -5,12 +5,21 @@
     import auth from "../auth";
     import { loadedUser } from "../app-state";
     import Trip from "./Trip.svelte";
+    import { Browser } from "@capacitor/browser";
 
     function showPopover(event: Event) {
         IonicShowPopover(event, "popover-extra", PopoverExtra, {}).then(
             async (result: { data: string }) => {
-                if (result.data == "logout") {
-                    await auth.logout();
+                switch (result.data) {
+                    case "logout":
+                        await auth.logout();
+                        break;
+                    case "github":
+                        await Browser.open({
+                            url: "http://github.com/marr11317/bhackcycle",
+                        });
+                    default:
+                        break;
                 }
             }
         );
@@ -45,7 +54,11 @@
         {:else}
             <ion-item>
                 <ion-label>Failed to load user</ion-label>
-                <ion-button slot="end" fill="outline" on:click={() => auth.logout()} >
+                <ion-button
+                    slot="end"
+                    fill="outline"
+                    on:click={() => auth.logout()}
+                >
                     Go back to login page
                 </ion-button>
             </ion-item>
