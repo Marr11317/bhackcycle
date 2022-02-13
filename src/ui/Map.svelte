@@ -2,8 +2,8 @@
     import L from "leaflet";
     import {onMount} from "svelte";
     import { Geolocation } from '@capacitor/geolocation';
-    import { addTripEndpoint, currentTrip } from "../app-state";
-import { GeoPoint } from "firebase/firestore/lite";
+    import { addTripEndpoint, computeTripDistance, currentTrip } from "../app-state";
+    import database from "../database";
 
     let carte;
     let trajetActuel;
@@ -76,7 +76,7 @@ import { GeoPoint } from "firebase/firestore/lite";
             carte.invalidateSize(); }
     }
 
-    async function initCurrentTrip() {
+    async function initTrip() {
         if(carte) {
             var position = await Geolocation.getCurrentPosition()
             var geopoint = {
@@ -100,12 +100,19 @@ import { GeoPoint } from "firebase/firestore/lite";
         }
     }
 
+    function endTrip() {
+        var trip: Trip = {...$currentTrip, distance:computeTripDistance($currentTrip.geopoints), endTime: $currentTrip.geopoints[$currentTrip.geopoints.length-1].timestamp };
+        database.updateTrip(trip);
+        currentTrip.set(null);
+    }
+
     function resumeCurrentTrip() {
         if(carte) {
             var pointList = $currentTrip.geopoints
                 .sort((a, b) => a.timestamp < b.timestamp ? -1 : 1)
                 .map( x => [x.location.latitude, x.location.longitude]);
             var origin = pointList[0];
+            console.log(origin)
             L.circleMarker(origin, 
             {
                 color: "red",
@@ -117,7 +124,7 @@ import { GeoPoint } from "firebase/firestore/lite";
                 color: "red",
                 weight: 3,
                 opacity: 0.5,
-                smoothFactor: 1
+                smoothFactor: 2
             });
             trajetActuel.addTo(carte);
         }
@@ -125,7 +132,7 @@ import { GeoPoint } from "firebase/firestore/lite";
 
     async function updateTrip() {
         if($currentTrip.geopoints.length == 0) {
-            initCurrentTrip()
+            initTrip()
         }
         var position = await Geolocation.getCurrentPosition()
         var geopoint = {
@@ -133,7 +140,7 @@ import { GeoPoint } from "firebase/firestore/lite";
             longitude: position.coords.longitude
         }
         addTripEndpoint(geopoint);
-        trajetActuel.addLatLng([position.coords.latitude, position.coords.longitude]);
+        trajetActuel.addLatLng([geopoint.latitude, geopoint.longitude]);
     }
 
     onMount(() => {
@@ -189,7 +196,17 @@ import { GeoPoint } from "firebase/firestore/lite";
 
 
 <div class="map" style="height:100%;width:100%;" use:mapAction >
+    {#if $currentTrip.geopoints.length}
     <div class="leaflet-bottom">
-        <ion-fab-button on:click={initCurrentTrip()}></ion-fab-button>
+        <ion-fab-button on:click={endTrip()} style="pointer-events: auto;">
+            <ion-icon name="close"></ion-icon>
+        </ion-fab-button>
     </div>
+    {:else}
+    <div class="leaflet-bottom">
+        <ion-fab-button on:click={initTrip()} style="pointer-events: auto;">
+            <ion-icon name="add"></ion-icon>
+        </ion-fab-button>
+    </div>
+    {/if}
 </div>
