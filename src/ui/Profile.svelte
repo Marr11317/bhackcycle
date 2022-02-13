@@ -5,7 +5,7 @@
     import auth from "../auth";
     import { loadedUser } from "../app-state";
     import Trip from "./Trip.svelte";
-
+    let isEditable = false;
     function showPopover(event: Event) {
         IonicShowPopover(event, "popover-extra", PopoverExtra, {}).then(
             async (result: { data: string }) => {
@@ -14,6 +14,10 @@
                 }
             }
         );
+    }
+    
+    function toggleEditable(){
+        isEditable = !isEditable;
     }
 </script>
 
@@ -37,9 +41,11 @@
         {#if $loadedUser}
             <ion-list-header>
                 <ion-label>Trips</ion-label>
+                <ion-button on:click={() => toggleEditable()}>Edit</ion-button>
             </ion-list-header>
+
             {#each $loadedUser.trips as trip (trip.id)}
-                <Trip {trip} />
+                <Trip editable={isEditable} {trip} />
             {/each}
         {:else}
             <ion-item>
