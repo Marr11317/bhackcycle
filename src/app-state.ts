@@ -14,13 +14,7 @@ const logged = writable<boolean | null>(false);
 
 const loadedUser = writable<User | null>(null)
 const allRewards = writable<Reward[] | null>(null)
-const currentTrip = persistentWritable<PendingTrip | null>('currentTrip', {
-  id: '1',
-  userEmail: 'suptom3@gmail.com',
-  startTime: new Date().toISOString(),
-  transportType: 'velo',
-  geopoints: []
-})
+const currentTrip = persistentWritable<PendingTrip | null>('currentTrip', null)
 
 const addTripEndpoint = (location: Geopoint) => {
   currentTrip.update(trip => {

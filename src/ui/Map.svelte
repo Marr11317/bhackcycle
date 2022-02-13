@@ -6,6 +6,7 @@
     addTripEndpoint,
     computeTripDistance,
     currentTrip,
+    loadedUser,
   } from "../app-state";
   import database from "./../database";
 
@@ -83,17 +84,19 @@
         x.location.longitude,
       ]);
 
-    L.circleMarker(pointList[pointList.length - 1], {
+    circleMarker = L.circleMarker(pointList[pointList.length - 1], {
       color: "red",
       weight: 2,
       opacity: 0.7,
-    }).addTo(carte);
+    });
     trajetActuel = L.polyline(pointList, {
       color: "red",
       weight: 3,
       opacity: 0.5,
       smoothFactor: 1,
     });
+
+    circleMarker.addTo(carte);
     trajetActuel.addTo(carte);
   };
 
@@ -120,16 +123,32 @@
 
     database.updateTrip(trip);
     currentTrip.set(null);
+
+    if (carte) {
+      trajetActuel?.removeFrom(carte);
+      circleMarker?.removeFrom(carte);
+    }
   };
 
-  const startTrip = () => {};
+  const startTrip = async () => {
+    currentTrip.set({
+      id: Date.now().toString(),
+      userEmail: $loadedUser!.email,
+      startTime: new Date().toISOString(),
+      transportType: "velo",
+      geopoints: [],
+    });
+
+    const currentPosition = await getCurrentPosition();
+    initCurrentTrip(currentPosition);
+  };
 
   onMount(() => {
     setInterval(async () => {
+      const currentPosition = await getCurrentPosition();
       if (!$currentTrip) {
         return;
       }
-      const currentPosition = await getCurrentPosition();
       addTripEndpoint({
         latitude: currentPosition.lat,
         longitude: currentPosition.lng,
@@ -164,7 +183,7 @@
 </svelte:head>
 
 <div class="map" style="height:100%;width:100%;" use:createMap>
-  {#if $currentTrip?.geopoints.length}
+  {#if $currentTrip}
     <div class="leaflet-bottom">
       <ion-fab-button on:click={stopTrip} style="pointer-events: auto;">
         <ion-icon name="close" />
