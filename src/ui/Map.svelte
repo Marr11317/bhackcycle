@@ -17,6 +17,7 @@
   let trajetActuel: L.Polyline | null = null;
   let circleMarker: L.CircleMarker | null = null;
   let currentPositionMarker: L.CircleMarker | null = null;
+  let isInitialized = false;
 
   const getCurrentPosition = async (): Promise<LatLngLiteral> => {
     const result = await Geolocation.getCurrentPosition();
@@ -94,7 +95,6 @@
         x.location.longitude,
       ]);
 
-    
     circleMarker = L.circleMarker(pointList[0], {
       color: "red",
       weight: 2,
@@ -191,14 +191,17 @@
     }, 3000);
   };
 
-  onMount(() => {
+  onMount( () => {
     setTimeout(async () => {
+      const t0 = Date.now();
       const currentPosition = await getCurrentPosition();
       carte?.setView(currentPosition);
       if ($currentTrip?.geopoints.length) {
         drawCurrentTrip();
       }
       resizeMap();
+      isInitialized = true;
+      console.log("Done loading!", Date.now() - t0, "ms");
     }, 300);
   });
 
@@ -239,7 +242,12 @@
     </ion-fab>
   {/if}
 
-  <div class="map" style="height: 100%; width: 100%;" use:createMap />
+  {#if !isInitialized}
+    <div class="loading">
+      <div>Loading...</div>
+    </div>
+  {/if}
+  <div class="map" use:createMap />
 </ion-content>
 
 <style>
@@ -255,5 +263,23 @@
   .map :global(.map-marker) {
     width: 30px;
     transform: translateX(-50%) translateY(-25%);
+  }
+
+  .map {
+    height: 100%;
+    width: 100%;
+  }
+
+  .loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10000;
+    background-color: white;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 </style>

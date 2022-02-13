@@ -11,6 +11,7 @@
     let trajetActuel: L.Polyline | null = null;
     let circleStartMarker: L.CircleMarker | null = null;
     let circleEndMarker: L.CircleMarker | null = null;
+    let isInitialized = false;
 
     const createMap = (container: HTMLElement) => {
         carte = L.map(container, { preferCanvas: true });
@@ -74,21 +75,24 @@
     };
 
     onMount(() => {
-        setTimeout(async () => {
-            if (trip) {
-                console.log(trip);
-                var center = averagePosition(trip);
-                carte?.setView([center.latitude, center.longitude]);
-                drawTrip();
-            }
+        setTimeout(() => {
+            const center = averagePosition(trip);
+            carte?.setView([center.latitude, center.longitude]);
+            drawTrip();
             resizeMap();
-        }, 1000);
+            isInitialized = true;
+        }, 300);
     });
 </script>
 
 <svelte:window on:resize={resizeMap} />
 
-<div class="map" style="height: 100%; width: 100%;" use:createMap />
+{#if !isInitialized}
+    <div class="loading">
+        <div>Loading...</div>
+    </div>
+{/if}
+<div class="map" use:createMap />
 
 <style>
     .map :global(.marker-text) {
@@ -103,5 +107,23 @@
     .map :global(.map-marker) {
         width: 30px;
         transform: translateX(-50%) translateY(-25%);
+    }
+
+    .map {
+        height: 100%;
+        width: 100%;
+    }
+
+    .loading {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 10000;
+        background-color: white;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 </style>

@@ -4,24 +4,29 @@
   let nodeRef: HTMLElement;
 
   import { computeTripDistance } from "../app-state";
-  import { IonicShowModal } from "./IonicControllers";
   import SummaryMap from "./SummaryMap.svelte";
   import database from "./../database";
   function deleteTrip() {
     database.deleteTrip(trip.id);
   }
-  import { iconNameForTransportType } from "./utilities";
+  import {
+    englishNameForTripType,
+    iconNameForTransportType,
+  } from "./utilities";
 
   let showTrip = false;
-  function viewTrip(event: Event) {
-    showTrip = true;
-    //IonicShowModal("summary-map", SummaryMap, {'trip': trip});
-  }
+  const showModal = () => (showTrip = true);
+  const dismissModal = () => (showTrip = false);
+
+  let distanceString =
+    trip.distance >= 1000
+      ? `${Math.floor(trip.distance / 1000)} km`
+      : `${Math.ceil(trip.distance)} m`;
 </script>
 
 <ion-item bind:this={nodeRef}>
   <ion-icon name={iconNameForTransportType(trip.transportType)} slot="start" />
-  <ion-label on:click={viewTrip}>
+  <ion-label on:click={showModal}>
     {computeTripDistance(trip.geopoints).toLocaleString(undefined, {
       maximumFractionDigits: 0,
     }) + " m"}
@@ -35,8 +40,31 @@
     }}>Delete</ion-button
   >
 </ion-item>
-{#if showTrip}
-  <ion-modal is-open>
+<ion-modal is-open={showTrip} on:didDismiss={dismissModal}>
+  {#if showTrip}
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button on:click={dismissModal}>
+            <ion-icon
+              slot="icon-only"
+              ios="arrow-back-outline"
+              md="arrow-back-outline"
+            />
+          </ion-button>
+        </ion-buttons>
+
+        <ion-title style="padding-inline: 0;">
+          {distanceString}
+          {' '}
+          {englishNameForTripType(trip.transportType)}
+        </ion-title>
+        <ion-subtitle>
+          <ion-icon name={iconNameForTransportType(trip.transportType)} />
+          {trip.startTime.toDateString()}</ion-subtitle
+        >
+      </ion-toolbar>
+    </ion-header>
     <SummaryMap {trip} />
-  </ion-modal>
-{/if}
+  {/if}
+</ion-modal>

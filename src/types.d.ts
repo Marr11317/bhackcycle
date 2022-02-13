@@ -23,7 +23,7 @@ declare type Trip = {
   startTime: Date
   endTime: Date | null
   transportType: TransportType
-  distance: number | null
+  distance: number
   geopoints: GeopointWithTimestamp[]
 }
 
