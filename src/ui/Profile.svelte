@@ -17,12 +17,12 @@
                         break;
                     case "about":
                         await Browser.open({
-                            url: "http://github.com/marr11317/Pricycles",
+                            url: "http://marr11317.github.io/pricycles/",
                         });
                         break;
                     case "github":
                         await Browser.open({
-                            url: "http://github.com/marr11317/Pricycle",
+                            url: "http://github.com/marr11317/pricycle",
                         });
                         break;
                     default:
