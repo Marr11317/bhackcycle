@@ -224,7 +224,7 @@
       on:click={reCenter}
     >
       <ion-fab-button>
-        <ion-icon name="pin" />
+        <ion-icon name="locate" />
       </ion-fab-button>
     </ion-fab>
   {#if $currentTrip}
