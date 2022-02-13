@@ -25,7 +25,7 @@
             }
         );
     }
-    
+
     function toggleEditable(){
         isEditable = !isEditable;
     }
@@ -58,6 +58,11 @@
             {#each $loadedUser.trips as trip (trip.id)}
                 <Trip editable={isEditable} {trip} />
             {/each}
+            {#if !$loadedUser.trips.length}
+            <ion-item lines="none">
+                <ion-label color="medium">You don't have any trips yets</ion-label>
+            </ion-item>
+            {/if}
         {:else}
             <ion-item>
                 <ion-label>Failed to load user</ion-label>
