@@ -32,6 +32,7 @@
         attribution:
           'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
         maxZoom: 20,
+        minZoom: 1,
         id: "mapbox/streets-v11",
         tileSize: 512,
         zoomOffset: -1,
@@ -39,7 +40,7 @@
           "pk.eyJ1IjoicmVkNWg0ZDB3IiwiYSI6ImNrems4bzhzMzRrcG4yeHByYTgwN2draHcifQ.356a0A2cfoy3zrhq-IW_rA",
       }
     ).addTo(carte);
-    carte.setView([45.508888, -73.561668], 14);
+    carte.setView([45.504755, -73.612572], 14); // Montreal
     return {
       destroy: () => {
         carte?.remove();
@@ -107,9 +108,7 @@
       return;
     }
 
-    const distance = computeTripDistance(
-      $currentTrip.geopoints.map(x => x.location)
-    );
+    const distance = computeTripDistance($currentTrip.geopoints);
 
     const trip: Trip = {
       id: $currentTrip.id,
@@ -121,7 +120,7 @@
 
       geopoints: $currentTrip.geopoints.map(({ location, timestamp }) => ({
         location,
-        timestamp: new Date(timestamp),
+        timestamp: timestamp,
       })),
     };
 
@@ -133,12 +132,12 @@
       circleMarker?.removeFrom(carte);
     }
 
-    loadedUser.update(user => {
+    loadedUser.update((user) => {
       if (!user) {
         return null;
       }
-      user.credits += Math.floor(5 * distance / 1000);
-      return user
+      user.credits += Math.floor((5 * distance) / 1000);
+      return user;
     });
   };
 

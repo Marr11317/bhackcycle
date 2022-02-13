@@ -24,12 +24,12 @@ const addTripEndpoint = (location: Geopoint) => {
   })
 }
 
-const computeTripDistance = (geopoints: Geopoint[]): number => {
+const computeTripDistance = (geopoints: GeopointWithTimestamp[]): number => {
   if (!geopoints.length) { return 0 }
 
   let distance = 0
   for (let i = 1; i < geopoints.length - 1; ++i) {
-    distance += haversineDistance(geopoints[i - 1], geopoints[i])
+    distance += haversineDistance(geopoints[i - 1].location, geopoints[i].location)
   }
   return distance
 }

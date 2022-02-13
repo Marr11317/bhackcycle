@@ -30,7 +30,7 @@ declare type PendingTrip = {
   userEmail: string
   startTime: string
   transportType: string
-  geopoints: { location: Geopoint, timestamp: string }[]
+  geopoints: GeopointWithTimestamp[]
 }
 
 declare type Geopoint = {
@@ -40,7 +40,7 @@ declare type Geopoint = {
 
 declare type GeopointWithTimestamp = {
   location: Geopoint
-  timestamp: Date
+  timestamp: string
 }
 
 declare type RewardProvider = {
