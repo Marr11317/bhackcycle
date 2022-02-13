@@ -94,7 +94,7 @@
         x.location.longitude,
       ]);
 
-    
+
     circleMarker = L.circleMarker(pointList[0], {
       color: "red",
       weight: 2,
@@ -195,7 +195,7 @@
     carte?.setView(currentPosition);
     resizeMap();
   }
-  
+
   onMount(() => {
     setTimeout(async () => {
       const currentPosition = await getCurrentPosition();
