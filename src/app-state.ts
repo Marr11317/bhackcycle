@@ -24,13 +24,12 @@ const addTripEndpoint = (location: Geopoint) => {
   })
 }
 
-// Take GeopointWithTimestamp instead of Geopoint to prevent a call to geopoints.map(...) in Trip.svelte
-const computeTripDistance = (geopoints: GeopointWithTimestamp[]): number => {
+const computeTripDistance = (geopoints: Geopoint[]): number => {
   if (!geopoints.length) { return 0 }
 
   let distance = 0
   for (let i = 1; i < geopoints.length - 1; ++i) {
-    distance += haversineDistance(geopoints[i - 1].location, geopoints[i].location)
+    distance += haversineDistance(geopoints[i - 1], geopoints[i])
   }
   return distance
 }
