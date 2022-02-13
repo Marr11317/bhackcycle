@@ -9,12 +9,7 @@
             firstName: "Douglas",
             lastName: "Adams",
             middleInitial: "N",
-        }).then(async (result) => {
-            console.log(
-                "🚀 ~ file: Dashboard.svelte ~ line 13 ~ showPopover ~ result",
-                result
-            );
-
+        }).then(async (result: { data: string }) => {
             if (result.data == "logout") {
                 await auth.logout();
             }

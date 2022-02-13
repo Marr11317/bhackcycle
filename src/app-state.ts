@@ -10,7 +10,6 @@ const persistentWritable = <T>(key: string, defaultValue?: T): Writable<T> => {
   return store
 }
 
-
 const logged = writable<boolean | null>(false);
 
 const loadedUser = writable<User | null>(null)

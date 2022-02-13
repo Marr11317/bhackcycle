@@ -1,6 +1,7 @@
 <script lang="ts">
   import Map from "./Map.svelte";
   import Rewards from "./Rewards.svelte";
+  import Dashboard from "./Dashboard.svelte";
   import { onMount } from "svelte";
 
   import auth from "./../auth";
@@ -11,8 +12,8 @@
     const result = await database.fetchUser(auth.getCurrentUser()!);
     loadedUser.set(result);
 
-    const result2 = await database.fetchAllRewards()
-    allRewards.set(result2)
+    const result2 = await database.fetchAllRewards();
+    allRewards.set(result2);
   });
 </script>
 
@@ -30,6 +31,11 @@
         <Rewards />
       </ion-content>
     </ion-tab>
+    <ion-tab tab="dashboard">
+      <ion-content>
+        <Dashboard />
+      </ion-content>
+    </ion-tab>
     <!-- <ion-tab tab="settings">
 			<h1 class="ma">Settings Content</h1>
 		</ion-tab> -->
@@ -41,6 +47,10 @@
       </ion-tab-button>
       <ion-tab-button tab="rewards">
         <ion-label>Rewards</ion-label>
+        <ion-icon name="trophy-outline" />
+      </ion-tab-button>
+      <ion-tab-button tab="dashboard">
+        <ion-label>dashboard</ion-label>
         <ion-icon name="analytics-outline" />
       </ion-tab-button>
     </ion-tab-bar>
