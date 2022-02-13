@@ -40,7 +40,7 @@
 <ion-list lines="full">
     {#if errorNote !== ""}
         <ion-item>
-            <ion-label>{errorNote}</ion-label>
+            <ion-label style="color: red;">{errorNote}</ion-label>
         </ion-item>
     {/if}
     {#if signup}
