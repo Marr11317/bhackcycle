@@ -76,7 +76,6 @@
     onMount(() => {
         setTimeout(async () => {
             if (trip) {
-                console.log(trip);
                 var center = averagePosition(trip);
                 carte?.setView([center.latitude, center.longitude]);
                 drawTrip();
