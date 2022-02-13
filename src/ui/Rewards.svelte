@@ -12,7 +12,8 @@
 <ion-content>
   <ion-list>
     <ion-list-header>
-      You have {$loadedUser?.credits} points to spend.
+      <h2>You have {$loadedUser?.credits}</h2>
+      <ion-icon style="color: green; font-size: 32px; padding-left: 3px;" name="leaf-outline" />
     </ion-list-header>
     {#if $allRewards}
       {#each $allRewards as reward}
