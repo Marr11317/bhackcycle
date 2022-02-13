@@ -1,3 +1,5 @@
+declare module 'svelte-custom-elements';
+
 declare type DatabaseUser = {
   email: string
   name: string
@@ -26,7 +28,7 @@ declare type Trip = {
 declare type PendingTrip = Omit<Trip, 'endTime' | 'distance'>
 
 declare type Geopoint = {
-  lattitude: number
+  latitude: number
   longitude: number
 }
 

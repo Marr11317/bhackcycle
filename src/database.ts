@@ -1,10 +1,10 @@
 import { collection, doc, setDoc, getDoc, getDocs, getFirestore, DocumentReference } from 'firebase/firestore'
 import { rewardConverter, userConverter, tripConverter } from './data_converter'
 
-const db = getFirestore()
-const userDoc = (email: string): DocumentReference<DatabaseUser> => doc(db, 'users', email).withConverter(userConverter)
-const tripDoc = (trip: Trip): DocumentReference<Trip> => doc(db, 'trips', trip.id).withConverter(tripConverter)
-const rewardDoc = (reward: Reward): DocumentReference<Reward> => doc(db, 'rewards', reward.id).withConverter(rewardConverter)
+const db = () => getFirestore()
+const userDoc = (email: string): DocumentReference<DatabaseUser> => doc(db(), 'users', email).withConverter(userConverter)
+const tripDoc = (trip: Trip): DocumentReference<Trip> => doc(db(), 'trips', trip.id).withConverter(tripConverter)
+const rewardDoc = (reward: Reward): DocumentReference<Reward> => doc(db(), 'rewards', reward.id).withConverter(rewardConverter)
 
 const updateUser = async (user: User): Promise<void> => {
   const { redeemedRewards, ...others } = user
@@ -27,14 +27,14 @@ const fetchUser = async (email: string): Promise<User | null> => {
   const { redeemedRewards: rewardIds, ...others } = baseUser
 
   const trips = await fetchUserTrips(baseUser.email)
-  const redeemedRewards = (await fetchAllRewards()).filter(reward => rewardIds.includes(reward.id))
+  const redeemedRewards = (await fetchAllRewards()).filter(reward => (rewardIds || []).includes(reward.id))
   return { ...others, trips: trips, redeemedRewards }
 }
 
 const fetchUserTrips = async (userEmail: string): Promise<Trip[]> => {
   const trips: Trip[] = []
 
-  const snap = await getDocs(collection(db, "trips").withConverter(tripConverter))
+  const snap = await getDocs(collection(db(), "trips").withConverter(tripConverter))
   snap.forEach(doc => doc.exists() && trips.push(doc.data()))
   return trips.filter(trip => trip.userEmail === userEmail)
 }
@@ -42,7 +42,7 @@ const fetchUserTrips = async (userEmail: string): Promise<Trip[]> => {
 const fetchAllRewards = async (): Promise<Reward[]> => {
   const rewards: Reward[] = []
 
-  const snap = await getDocs(collection(db, "rewards").withConverter(rewardConverter))
+  const snap = await getDocs(collection(db(), "rewards").withConverter(rewardConverter))
   snap.forEach(doc => doc.exists() && rewards.push(doc.data()))
   return rewards
 }
