@@ -15,7 +15,7 @@
 <ion-card on:click={() => tryToRedeem(playerPoints)}  class={isRedeemed ? "redeemed" : "notRedeemed"}>
     <ion-card-header>
         <ion-card-subtitle>expires on {reward.expiration} | {reward.remainingUnits} remaining units</ion-card-subtitle>
-        <ion-card-title>{reward.providerName}</ion-card-title>
+        <ion-card-title>{reward.name}</ion-card-title>
     </ion-card-header>
   
     <ion-card-content>
