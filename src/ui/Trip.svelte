@@ -1,13 +1,13 @@
 <script lang="ts">
     export let trip: Trip;
     export let editable = false;
-    let nodeRef;
+    let nodeRef: HTMLElement;
+
     import { computeTripDistance } from "../app-state";
     import { IonicShowModal } from "./IonicControllers";
     import SummaryMap from "./SummaryMap.svelte";
     import database from './../database';
-    function deleteTrip(){
-        console.log("deleted");
+    function deleteTrip() {
         database.deleteTrip(trip.id);
     }
     import { iconNameForTransportType } from "./utilities";
@@ -29,5 +29,5 @@
 
     <ion-button hidden={!editable} on:click={() => {
         deleteTrip();
-        nodeRef.parentNode.removeChild(nodeRef);}}>Delete</ion-button>
+        nodeRef?.parentNode?.removeChild(nodeRef);}}>Delete</ion-button>
 </ion-item>
