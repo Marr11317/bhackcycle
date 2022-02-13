@@ -21,7 +21,7 @@
             closeOverlay("about");
         }}
     >
-        About Prixcycle
+        About Pricycle
         <ion-icon name="information-circle-outline" slot="end" />
     </ion-item>
     <ion-item
