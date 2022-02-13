@@ -1,7 +1,7 @@
 <script lang="ts">
     let overlayElement = document.querySelector("ion-popover");
     const closeOverlay = (data: string) => {
-        overlayElement.dismiss(data);
+        overlayElement?.dismiss(data);
     };
 </script>
 
