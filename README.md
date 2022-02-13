@@ -1,6 +1,6 @@
-# Hack22
+# bhackcycle
 
-Une application utilisant Svelte et Ionic
+An app where you get paid to save carbon.
 
 ## Getting started
 
@@ -11,5 +11,3 @@ npm i -g pnpm
 pnpm install
 pnpm run dev
 ```
-
-Then open `http://localhost:5000/` to preview;
