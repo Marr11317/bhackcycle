@@ -76,19 +76,20 @@ import { GeoPoint } from "firebase/firestore/lite";
             carte.invalidateSize(); }
     }
 
-    function initCurrentTrip() {
+    async function initCurrentTrip() {
         if(carte) {
-            var pointList = $currentTrip.geopoints
-                .sort((a, b) => a.timestamp < b.timestamp ? -1 : 1)
-                .map( x => [x.location.latitude, x.location.longitude]);
-            var origin = pointList[0];
-            L.circleMarker(origin, 
+            var position = await Geolocation.getCurrentPosition()
+            var geopoint = {
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude
+            }
+            L.circleMarker([geopoint.latitude, geopoint.longitude], 
             {
                 color: "red",
                 weight: 2,
                 opacity: 0.7
             }).addTo(carte);
-            trajetActuel = L.polyline(pointList,
+            trajetActuel = L.polyline([geopoint.latitude, geopoint.longitude],
             {
                 color: "red",
                 weight: 3,
@@ -99,7 +100,7 @@ import { GeoPoint } from "firebase/firestore/lite";
         }
     }
 
-    function drawCurrentTrip() {
+    function resumeCurrentTrip() {
         if(carte) {
             var pointList = $currentTrip.geopoints
                 .sort((a, b) => a.timestamp < b.timestamp ? -1 : 1)
@@ -123,7 +124,9 @@ import { GeoPoint } from "firebase/firestore/lite";
     }
 
     async function updateTrip() {
-        if($currentTrip.geopoints.length == 0)
+        if($currentTrip.geopoints.length == 0) {
+            initCurrentTrip()
+        }
         var position = await Geolocation.getCurrentPosition()
         var geopoint = {
             latitude: position.coords.latitude,
@@ -145,7 +148,7 @@ import { GeoPoint } from "firebase/firestore/lite";
                     carte.setView([ initialView.coords.latitude, initialView.coords.longitude]);
                     console.log($currentTrip)
                     if($currentTrip?.geopoints.length) {
-                        drawCurrentTrip();
+                        resumeCurrentTrip();
                     }
                     resizeMap();
                 },
