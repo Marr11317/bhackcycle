@@ -185,21 +185,21 @@
 
 <svelte:window on:resize={resizeMap} />
 
-<div class="map" style="height:100%;width:100%;" use:createMap>
-  {#if $currentTrip}
-    <div class="leaflet-bottom">
-      <ion-fab-button on:click={stopTrip} style="pointer-events: auto;">
-        <ion-icon name="close" />
-      </ion-fab-button>
-    </div>
-  {:else}
-    <div class="leaflet-bottom">
-      <ion-fab-button on:click={startTrip} style="pointer-events: auto;">
-        <ion-icon name="add" />
-      </ion-fab-button>
-    </div>
-  {/if}
-</div>
+<ion-content fullscreen>
+  <ion-fab
+    horizontal="center"
+    vertical="bottom"
+    slot="fixed"
+    on:click={$currentTrip ? stopTrip : startTrip}
+    style="pointer-events: auto;"
+  >
+    <ion-fab-button>
+      <ion-icon name={$currentTrip ? "close" : "add"} />
+    </ion-fab-button>
+  </ion-fab>
+
+  <div class="map" style="height: 100%; width: 100%;" use:createMap />
+</ion-content>
 
 <style>
   .map :global(.marker-text) {

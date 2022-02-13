@@ -18,7 +18,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content fullscreen>
+<ion-content>
   {#if $allRewards}
     {#each $allRewards as reward}
       <RewardCard {reward} />
