@@ -2,19 +2,7 @@
     export let trip: Trip;
 
     import { computeTripDistance } from "../app-state";
-
-    function iconNameForTransportType(transportType: string) {
-        switch (transportType) {
-            case "bicycle":
-                return "bicycle";
-            case "walk":
-                return "walk";
-            case "public_transport":
-                return "bus";
-            default:
-                return "walk";
-        }
-    }
+    import { iconNameForTransportType } from "./utilities";
 </script>
 
 <ion-item>

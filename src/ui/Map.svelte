@@ -11,6 +11,7 @@
     loadedUser,
   } from "../app-state";
   import database from "./../database";
+  import { iconNameForTransportType } from "./utilities";
 
   let carte: L.Map | null = null;
   let trajetActuel: L.Polyline | null = null;
@@ -110,8 +111,7 @@
       recordId = null;
     }
 
-    if (!$currentTrip)
-      return;
+    if (!$currentTrip) return;
 
     const distance = computeTripDistance($currentTrip.geopoints);
 
@@ -146,12 +146,12 @@
     });
   };
 
-  const startTrip = async () => {
+  const startTrip = async (transportType: TransportType) => {
     currentTrip.set({
       id: Date.now().toString(),
       userEmail: $loadedUser!.email,
       startTime: new Date().toISOString(),
-      transportType: "velo",
+      transportType: transportType,
       geopoints: [],
     });
 
@@ -159,8 +159,7 @@
     initCurrentTrip(currentPosition);
 
     recordId = window.setInterval(async () => {
-      if (!$currentTrip)
-        return;
+      if (!$currentTrip) return;
 
       const currentPosition = await getCurrentPosition();
       addTripEndpoint({
@@ -186,22 +185,43 @@
       resizeMap();
     }, 300);
   });
+
+  const transportTypes: TransportType[] = [
+    "publicTransport",
+    "walk",
+    "bicycle",
+  ];
 </script>
 
 <svelte:window on:resize={resizeMap} />
 
-<ion-content fullscreen>
-  <ion-fab
-    horizontal="center"
-    vertical="bottom"
-    slot="fixed"
-    on:click={$currentTrip ? stopTrip : startTrip}
-    style="pointer-events: auto;"
-  >
-    <ion-fab-button>
-      <ion-icon name={$currentTrip ? "close" : "add"} />
-    </ion-fab-button>
-  </ion-fab>
+<ion-content>
+  {#if $currentTrip}
+    <ion-fab
+      horizontal="center"
+      vertical="bottom"
+      slot="fixed"
+      on:click={stopTrip}
+    >
+      <ion-fab-button>
+        <ion-icon name="close" />
+      </ion-fab-button>
+    </ion-fab>
+  {:else}
+    <ion-fab horizontal="center" vertical="bottom" slot="fixed">
+      <ion-fab-button>
+        <ion-icon name="add" />
+      </ion-fab-button>
+
+      <ion-fab-list side="top">
+        {#each transportTypes as transportType}
+          <ion-fab-button on:click={() => startTrip(transportType)}>
+            <ion-icon name={iconNameForTransportType(transportType)} />
+          </ion-fab-button>
+        {/each}
+      </ion-fab-list>
+    </ion-fab>
+  {/if}
 
   <div class="map" style="height: 100%; width: 100%;" use:createMap />
 </ion-content>
