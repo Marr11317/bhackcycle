@@ -29,7 +29,7 @@
   let currentError = "";
 
   function validate(
-    name,
+    name: string,
     email: string,
     passwordInput: string,
     confirmPasswordInput: string,
@@ -42,7 +42,7 @@
     return "";
   }
 
-  async function submit(event) {
+  async function submit(event: any) {
     const { name, email, password, confirmPassword, signup } = event.detail;
 
     const error = validate(name, email, password, confirmPassword, signup);

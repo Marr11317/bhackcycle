@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { loadedUser } from "../../app-state";
 
     export let reward;
@@ -14,8 +14,6 @@
             });    
             reward.remainingUnits--;
         }
-
-        console.log("clicked on reward");
     }
 
     function hasRedeemedBefore(){
@@ -25,29 +23,39 @@
 
 <ion-card on:click={() => tryToRedeem()}  class={rewardRedeemed ? "redeemed" : "notRedeemed"}>
     <ion-card-header>
-        <ion-card-subtitle>expires on {reward.expiration} | {reward.remainingUnits} remaining units</ion-card-subtitle>
         <ion-card-title>{reward.name}</ion-card-title>
+        <ion-card-subtitle class="sub">
+            {reward.description}
+        </ion-card-subtitle>
     </ion-card-header>
-  
-    <ion-card-content>
-      {reward.description}
-    </ion-card-content>
 
-    <ion-card-content>
-        price: {reward.price} active points
+    <ion-card-content class="content">
+        Cost: {reward.price} credits.
+        <br />
+        {reward.expiration
+            ? `Expires on ${reward.expiration.toDateString()}`
+            : ""}
     </ion-card-content>
-    
 </ion-card>
+
 <style>
     ion-card {
         color: aliceblue;
         visibility: visible;
     }
-    .redeemed{
-        background-color: lightgreen;
+    .redeemed {
+        background-color: beige;
     }
-    .notRedeemed{
-        background-color: skyblue;
+    .notRedeemed {
+        background-color: #c3e4f1;
+    }
+
+    .sub {
+        font-size: 1rem;
+        color: gray;
+    }
+
+    .content {
+        color: gray;
     }
 </style>
-  

@@ -8,48 +8,31 @@
   import database from "./../database";
   import { allRewards, loadedUser } from "./../app-state";
 
-  let credits = 0;
+
   onMount(async () => {
     const result = await database.fetchUser(auth.getCurrentUser()!);
-    loadedUser.set(result);
+    $loadedUser = result;
 
     const result2 = await database.fetchAllRewards();
-    allRewards.set(result2);
+    $allRewards = result2;
   });
 
-  loadedUser.subscribe(async (loadedUser) => {
-    if(loadedUser !== null){
-      console.log("loaded user updated " + credits);
-      credits = loadedUser.credits;
-      await database.updateUser(loadedUser);
-    }
+  loadedUser.subscribe(async (user) => {
+    if(user) await database.updateUser(user);
   });
-
-
 </script>
 
 <ion-app>
   <ion-tabs>
     <ion-tab tab="map">
-      <div>
-        {$loadedUser?.name} ({$loadedUser?.email}) | {credits}
-        credits
-      </div>
       <Map />
     </ion-tab>
     <ion-tab tab="rewards">
-      <ion-content>
-        <Rewards />
-      </ion-content>
+      <Rewards />
     </ion-tab>
     <ion-tab tab="profile">
-      <ion-content>
-        <Profile />
-      </ion-content>
+      <Profile />
     </ion-tab>
-    <!-- <ion-tab tab="settings">
-			<h1 class="ma">Settings Content</h1>
-		</ion-tab> -->
 
     <ion-tab-bar slot="bottom">
       <ion-tab-button tab="map">

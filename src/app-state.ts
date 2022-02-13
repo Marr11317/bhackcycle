@@ -19,7 +19,7 @@ const currentTrip = persistentWritable<PendingTrip | null>('currentTrip', null)
 const addTripEndpoint = (location: Geopoint) => {
   currentTrip.update(trip => {
     if (!trip) { return null }
-    trip.geopoints = [...trip.geopoints, { timestamp: new Date(), location }]
+    trip.geopoints = [...trip.geopoints, { timestamp: new Date().toISOString(), location }]
     return trip
   })
 }

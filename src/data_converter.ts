@@ -21,15 +21,17 @@ export const userConverter: FirestoreDataConverter<DatabaseUser> = {
 
 // Firestore data converter
 export const tripConverter: FirestoreDataConverter<Trip> = {
-  toFirestore: trip => ({
-    id: trip.id,
-    userEmail: trip.userEmail,
-    startTime: Timestamp.fromDate(trip.startTime as Date),
-    endTime: trip.endTime ? Timestamp.fromDate(trip.endTime as Date) : null,
-    transportType: trip.transportType,
-    distance: trip.distance,
-    geopoints: trip.geopoints
-  }),
+  toFirestore: trip => {
+    return {
+      id: trip.id,
+      userEmail: trip.userEmail,
+      startTime: Timestamp.fromDate(trip.startTime as Date),
+      endTime: trip.endTime ? Timestamp.fromDate(trip.endTime as Date) : null,
+      transportType: trip.transportType,
+      distance: trip.distance,
+      geopoints: trip.geopoints
+    }
+  },
   fromFirestore: (snapshot, options) => {
     const data = snapshot.data(options)
     return {

@@ -1,7 +1,7 @@
 {
   "extends": "@tsconfig/svelte/tsconfig.json",
   "compilerOptions": {
-    "outDir": "dist",
+    "outDir": "dist-ts",
     "moduleResolution": "node",
     "target": "esnext",
     "module": "esnext",

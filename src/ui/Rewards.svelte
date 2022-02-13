@@ -1,8 +1,8 @@
-<script>
-  import { allRewards } from "./../app-state";
+<script lang="ts">
+  import { allRewards, loadedUser } from "./../app-state";
   import RewardCard from "./Rewards/RewardCard.svelte";
-  import { loadedUser } from "../app-state";
-  let playerPoints;
+
+  let playerPoints: number;
   loadedUser.subscribe((loadedUser) =>{
       if(loadedUser !== null){
           playerPoints = loadedUser.credits;
@@ -13,14 +13,15 @@
 <ion-header translucent>
   <ion-toolbar>
     <ion-title>Rewards</ion-title>
-    <ion-subtitle>You have {playerPoints} points to spend.</ion-subtitle>
+    <ion-subtitle>You have {$loadedUser?.credits} points to spend.</ion-subtitle
+    >
   </ion-toolbar>
 </ion-header>
 
-<div>
+<ion-content>
   {#if $allRewards}
     {#each $allRewards as reward}
-      <RewardCard reward={reward}/>
+      <RewardCard {reward} />
     {/each}
   {/if}
-</div>
+</ion-content>
