@@ -105,15 +105,17 @@
       return;
     }
 
+    const distance = computeTripDistance(
+      $currentTrip.geopoints.map(x => x.location)
+    );
+
     const trip: Trip = {
       id: $currentTrip.id,
       userEmail: $currentTrip.userEmail,
       transportType: $currentTrip.transportType,
       startTime: new Date($currentTrip.startTime),
       endTime: new Date(),
-      distance: computeTripDistance(
-        $currentTrip.geopoints.map((x) => x.location)
-      ),
+      distance: distance,
 
       geopoints: $currentTrip.geopoints.map(({ location, timestamp }) => ({
         location,
@@ -128,6 +130,14 @@
       trajetActuel?.removeFrom(carte);
       circleMarker?.removeFrom(carte);
     }
+
+    loadedUser.update(user => {
+      if (!user) {
+        return null;
+      }
+      user.credits += Math.floor(5 * distance / 1000);
+      return user
+    });
   };
 
   const startTrip = async () => {

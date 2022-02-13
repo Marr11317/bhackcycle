@@ -34,9 +34,6 @@
     <ion-tab tab="profile">
       <Profile />
     </ion-tab>
-    <!-- <ion-tab tab="settings">
-			<h1 class="ma">Settings Content</h1>
-		</ion-tab> -->
 
     <ion-tab-bar slot="bottom">
       <ion-tab-button tab="map">
