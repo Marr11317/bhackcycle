@@ -54,7 +54,7 @@ export const rewardConverter: FirestoreDataConverter<Reward> = {
     description: reward.description,
     price: reward.price,
     provider: reward.provider,
-    expiration: Timestamp.fromDate(reward.expiration as Date),
+    expiration: reward.expiration ? Timestamp.fromDate(reward.expiration as Date) : null,
     remainingUnits: reward.remainingUnits
   }),
   fromFirestore: (snapshot, options) => {
@@ -65,7 +65,7 @@ export const rewardConverter: FirestoreDataConverter<Reward> = {
       description: data.description,
       price: data.price,
       provider: data.provider,
-      expiration: (data.expiration as Timestamp).toDate(),
+      expiration: data.expiration ? (data.expiration as Timestamp).toDate() : null,
       remainingUnits: data.remainingUnits
     }
   }
