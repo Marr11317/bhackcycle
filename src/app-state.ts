@@ -11,6 +11,7 @@ const persistentWritable = <T>(key: string, defaultValue?: T): Writable<T> => {
 }
 
 const loadedUser = writable<User | null>(null)
+const allRewards = writable<Reward[] | null>(null)
 const currentTrip = persistentWritable<PendingTrip | null>('currentTrip', {
   id: '1',
   userEmail: 'suptom3@gmail.com',
@@ -37,4 +38,4 @@ const computeTripDistance = (geopoints: GeopointWithTimestamp[]): number => {
   return distance
 }
 
-export { currentTrip, loadedUser, addTripEndpoint, computeTripDistance }
+export { currentTrip, loadedUser, allRewards, addTripEndpoint, computeTripDistance }
