@@ -11,10 +11,36 @@
   let credits = 0;
   onMount(async () => {
     const result = await database.fetchUser(auth.getCurrentUser()!);
-    loadedUser.set(result);
+    $loadedUser = result;
 
     const result2 = await database.fetchAllRewards();
-    allRewards.set(result2);
+    $allRewards = result2;
+
+    $loadedUser.trips.push({
+      id: "1",
+      userEmail: $loadedUser.email,
+      startTime: new Date(),
+      endTime: new Date(new Date().getTime() + 1000 * 60 * 60 * 24),
+      transportType: "bus",
+      distance: 10000,
+      geopoints: [
+        {
+          location: {
+            latitude: 1,
+            longitude: 1,
+          },
+          timestamp: new Date(),
+        },
+        {
+          location: {
+            latitude: 2,
+            longitude: 2,
+          },
+          timestamp: new Date(),
+        },
+      ],
+    });
+    $loadedUser = $loadedUser;
   });
 
   loadedUser.subscribe(async (loadedUser) => {
@@ -31,21 +57,13 @@
 <ion-app>
   <ion-tabs>
     <ion-tab tab="map">
-      <div>
-        {$loadedUser?.name} ({$loadedUser?.email}) | {credits}
-        credits
-      </div>
       <Map />
     </ion-tab>
     <ion-tab tab="rewards">
-      <ion-content>
-        <Rewards />
-      </ion-content>
+      <Rewards />
     </ion-tab>
     <ion-tab tab="profile">
-      <ion-content>
-        <Profile />
-      </ion-content>
+      <Profile />
     </ion-tab>
     <!-- <ion-tab tab="settings">
 			<h1 class="ma">Settings Content</h1>
