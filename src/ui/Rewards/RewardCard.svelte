@@ -2,19 +2,14 @@
     import { loadedUser } from "../../app-state";
 
     export let reward;
-    export let isRedeemed = false;
-    let playerPoints = 100;
+    let rewardRedeemed = $loadedUser.redeemedRewards.findIndex((redeemed) => redeemed.id === reward.id) !== -1;
 
-    loadedUser.subscribe((loadedUser) =>{
-        if(loadedUser !== null){
-            playerPoints = loadedUser.credits;
-        }
-    })
-    function tryToRedeem(playerPoints) {
-        if(!isRedeemed && reward.remainingUnits !== 0 && playerPoints >= reward.price){
-            isRedeemed = true;
+    function tryToRedeem() {
+        if(!hasRedeemedBefore() && reward.remainingUnits !== 0 && $loadedUser.credits >= reward.price){
             loadedUser.update(loadedUser =>{
+                rewardRedeemed = true;
                 loadedUser.credits -= reward.price;
+                loadedUser.redeemedRewards = [...loadedUser.redeemedRewards, reward];
                 return loadedUser;
             });    
             reward.remainingUnits--;
@@ -22,9 +17,13 @@
 
         console.log("clicked on reward");
     }
+
+    function hasRedeemedBefore(){
+        return $loadedUser.redeemedRewards.findIndex((redeemed) => redeemed.id === reward.id) !== -1;
+    }
 </script>
 
-<ion-card on:click={() => tryToRedeem(playerPoints)}  class={isRedeemed ? "redeemed" : "notRedeemed"}>
+<ion-card on:click={() => tryToRedeem()}  class={rewardRedeemed ? "redeemed" : "notRedeemed"}>
     <ion-card-header>
         <ion-card-subtitle>expires on {reward.expiration} | {reward.remainingUnits} remaining units</ion-card-subtitle>
         <ion-card-title>{reward.name}</ion-card-title>
