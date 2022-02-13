@@ -17,7 +17,7 @@ const allRewards = writable<Reward[] | null>(null)
 const currentTrip = persistentWritable<PendingTrip | null>('currentTrip', {
   id: '1',
   userEmail: 'suptom3@gmail.com',
-  startTime: new Date(),
+  startTime: new Date().toISOString(),
   transportType: 'velo',
   geopoints: []
 })
@@ -25,17 +25,17 @@ const currentTrip = persistentWritable<PendingTrip | null>('currentTrip', {
 const addTripEndpoint = (location: Geopoint) => {
   currentTrip.update(trip => {
     if (!trip) { return null }
-    trip.geopoints = [...trip.geopoints, { timestamp: new Date(), location }]
+    trip.geopoints = [...trip.geopoints, { timestamp: new Date().toISOString(), location }]
     return trip
   })
 }
 
-const computeTripDistance = (geopoints: GeopointWithTimestamp[]): number => {
+const computeTripDistance = (geopoints: Geopoint[]): number => {
   if (!geopoints.length) { return 0 }
 
   let distance = 0
   for (let i = 1; i < geopoints.length - 1; ++i) {
-    distance += haversineDistance(geopoints[i - 1].location, geopoints[i].location)
+    distance += haversineDistance(geopoints[i - 1], geopoints[i])
   }
   return distance
 }

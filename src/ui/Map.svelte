@@ -7,7 +7,7 @@
     computeTripDistance,
     currentTrip,
   } from "../app-state";
-import database from "./../database";
+  import database from "./../database";
 
   let carte: L.Map | null = null;
   let trajetActuel: L.Polyline | null = null;
@@ -103,18 +103,26 @@ import database from "./../database";
     }
 
     const trip: Trip = {
-      ...$currentTrip,
-      distance: computeTripDistance($currentTrip.geopoints),
+      id: $currentTrip.id,
+      userEmail: $currentTrip.userEmail,
+      transportType: $currentTrip.transportType,
+      startTime: new Date($currentTrip.startTime),
       endTime: new Date(),
+      distance: computeTripDistance(
+        $currentTrip.geopoints.map((x) => x.location)
+      ),
+
+      geopoints: $currentTrip.geopoints.map(({ location, timestamp }) => ({
+        location,
+        timestamp: new Date(timestamp),
+      })),
     };
 
     database.updateTrip(trip);
     currentTrip.set(null);
   };
 
-  const startTrip = () => {
-
-  }
+  const startTrip = () => {};
 
   onMount(() => {
     setInterval(async () => {
@@ -154,7 +162,6 @@ import database from "./../database";
     crossorigin=""
   />
 </svelte:head>
-
 
 <div class="map" style="height:100%;width:100%;" use:createMap>
   {#if $currentTrip?.geopoints.length}

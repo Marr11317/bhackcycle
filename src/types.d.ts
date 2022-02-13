@@ -1,4 +1,4 @@
-declare module 'svelte-custom-elements';
+declare module 'svelte-custom-elements'
 
 declare type DatabaseUser = {
   email: string
@@ -25,7 +25,13 @@ declare type Trip = {
   geopoints: GeopointWithTimestamp[]
 }
 
-declare type PendingTrip = Omit<Trip, 'endTime' | 'distance'>
+declare type PendingTrip = {
+  id: string
+  userEmail: string
+  startTime: string
+  transportType: string
+  geopoints: { location: Geopoint, timestamp: string }[]
+}
 
 declare type Geopoint = {
   latitude: number
