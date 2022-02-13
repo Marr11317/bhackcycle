@@ -5,20 +5,14 @@
 
     function iconNameForTransportType(transportType: string) {
         switch (transportType) {
-            case "car":
-                return "car";
             case "bicycle":
                 return "bicycle";
             case "walk":
                 return "walk";
-            case "bus":
+            case "public_transport":
                 return "bus";
-            case "train":
-                return "train";
-            case "plane":
-                return "plane";
             default:
-                return "car";
+                return "walk";
         }
     }
 </script>

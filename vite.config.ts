@@ -20,7 +20,8 @@ const config = <UserConfig>defineConfig({
 	server: {
 		host: 'localhost',
 		port: 4000
-	}
+	},
+	base: production ? "/bhackcycle/": undefined
 });
 
 export default config;

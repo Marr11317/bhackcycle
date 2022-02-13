@@ -1,7 +1,13 @@
-<script>
-  import { allRewards } from "./../app-state";
+<script lang="ts">
+  import { allRewards, loadedUser } from "./../app-state";
   import RewardCard from "./Rewards/RewardCard.svelte";
-  import { loadedUser } from "../app-state";
+
+  let playerPoints: number;
+  loadedUser.subscribe((loadedUser) =>{
+      if(loadedUser !== null){
+          playerPoints = loadedUser.credits;
+      }
+    })
 </script>
 
 <ion-header translucent>

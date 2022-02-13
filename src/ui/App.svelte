@@ -8,18 +8,17 @@
   import database from "./../database";
   import { allRewards, loadedUser } from "./../app-state";
 
+
   onMount(async () => {
     const result = await database.fetchUser(auth.getCurrentUser()!);
     $loadedUser = result;
 
     const result2 = await database.fetchAllRewards();
     $allRewards = result2;
+  });
 
-    loadedUser.subscribe(user => {
-      if (user !== null) {
-        database.updateUser(user);
-      }
-    });
+  loadedUser.subscribe(async (user) => {
+    if(user) await database.updateUser(user);
   });
 </script>
 
