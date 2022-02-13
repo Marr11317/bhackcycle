@@ -190,7 +190,12 @@
       }
     }, 3000);
   };
-
+  const reCenter = async () => {
+    const currentPosition = await getCurrentPosition();
+    carte?.setView(currentPosition);
+    resizeMap();
+  }
+  
   onMount(() => {
     setTimeout(async () => {
       const currentPosition = await getCurrentPosition();
@@ -212,6 +217,16 @@
 <svelte:window on:resize={resizeMap} />
 
 <ion-content>
+  <ion-fab
+      horizontal="end"
+      vertical="top"
+      slot="fixed"
+      on:click={reCenter}
+    >
+      <ion-fab-button>
+        <ion-icon name="pin" />
+      </ion-fab-button>
+    </ion-fab>
   {#if $currentTrip}
     <ion-fab
       horizontal="center"
