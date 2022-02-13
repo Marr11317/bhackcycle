@@ -8,7 +8,6 @@
   import database from "./../database";
   import { allRewards, loadedUser } from "./../app-state";
 
-  let credits = 0;
   onMount(async () => {
     const result = await database.fetchUser(auth.getCurrentUser()!);
     $loadedUser = result;
@@ -16,42 +15,12 @@
     const result2 = await database.fetchAllRewards();
     $allRewards = result2;
 
-    $loadedUser.trips.push({
-      id: "1",
-      userEmail: $loadedUser.email,
-      startTime: new Date(),
-      endTime: new Date(new Date().getTime() + 1000 * 60 * 60 * 24),
-      transportType: "bus",
-      distance: 10000,
-      geopoints: [
-        {
-          location: {
-            latitude: 1,
-            longitude: 1,
-          },
-          timestamp: new Date(),
-        },
-        {
-          location: {
-            latitude: 2,
-            longitude: 2,
-          },
-          timestamp: new Date(),
-        },
-      ],
+    loadedUser.subscribe(user => {
+      if (user !== null) {
+        database.updateUser(user);
+      }
     });
-    $loadedUser = $loadedUser;
   });
-
-  loadedUser.subscribe(async (loadedUser) => {
-    if(loadedUser !== null){
-      console.log("loaded user updated " + credits);
-      credits = loadedUser.credits;
-      await database.updateUser(loadedUser);
-    }
-  });
-
-
 </script>
 
 <ion-app>
