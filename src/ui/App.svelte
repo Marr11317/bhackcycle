@@ -1,7 +1,7 @@
 <script lang="ts">
   import Map from "./Map.svelte";
   import Rewards from "./Rewards.svelte";
-  import Dashboard from "./Dashboard.svelte";
+  import Profile from "./Profile.svelte";
   import { onMount } from "svelte";
 
   import auth from "./../auth";
@@ -31,9 +31,9 @@
         <Rewards />
       </ion-content>
     </ion-tab>
-    <ion-tab tab="dashboard">
+    <ion-tab tab="profile">
       <ion-content>
-        <Dashboard />
+        <Profile />
       </ion-content>
     </ion-tab>
     <!-- <ion-tab tab="settings">
@@ -49,8 +49,8 @@
         <ion-label>Rewards</ion-label>
         <ion-icon name="trophy-outline" />
       </ion-tab-button>
-      <ion-tab-button tab="dashboard">
-        <ion-label>dashboard</ion-label>
+      <ion-tab-button tab="profile">
+        <ion-label>profile</ion-label>
         <ion-icon name="analytics-outline" />
       </ion-tab-button>
     </ion-tab-bar>

@@ -29,6 +29,6 @@
             </ion-button>
         </ion-buttons>
 
-        <ion-title>Dashboard</ion-title>
+        <ion-title>Profile</ion-title>
     </ion-toolbar>
 </ion-header>
