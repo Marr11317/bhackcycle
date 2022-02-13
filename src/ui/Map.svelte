@@ -43,6 +43,7 @@
           "pk.eyJ1IjoicmVkNWg0ZDB3IiwiYSI6ImNrems4bzhzMzRrcG4yeHByYTgwN2draHcifQ.356a0A2cfoy3zrhq-IW_rA",
       }
     ).addTo(carte);
+    L.control.scale().addTo(carte);
     carte.setView([45.504755, -73.612572], 14); // Montreal
     return {
       destroy: () => {
@@ -190,6 +191,11 @@
       }
     }, 3000);
   };
+  const reCenter = async () => {
+    const currentPosition = await getCurrentPosition();
+    carte?.setView(currentPosition);
+    resizeMap();
+  }
 
   onMount( () => {
     setTimeout(async () => {
@@ -215,6 +221,16 @@
 <svelte:window on:resize={resizeMap} />
 
 <ion-content>
+  <ion-fab
+      horizontal="end"
+      vertical="top"
+      slot="fixed"
+      on:click={reCenter}
+    >
+      <ion-fab-button>
+        <ion-icon name="locate" />
+      </ion-fab-button>
+    </ion-fab>
   {#if $currentTrip}
     <ion-fab
       horizontal="center"

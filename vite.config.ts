@@ -21,7 +21,7 @@ const config = <UserConfig>defineConfig({
 		host: 'localhost',
 		port: 4000
 	},
-	base: production ? "/bhackcycle/": undefined
+	base: production ? "/pricycle/": undefined
 });
 
 export default config;

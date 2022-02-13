@@ -24,7 +24,7 @@ publish(
     'dist',
     {
         branch: 'gh-pages',
-        repo: 'https://github.com/Marr11317/bhackcycle.git',
+        repo: 'https://github.com/Marr11317/pricycle.git',
         user: {
             name: 'Remi Marche',
             email: 'remimarche@gmail.com',

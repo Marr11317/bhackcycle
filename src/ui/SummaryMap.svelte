@@ -29,6 +29,7 @@
                     "pk.eyJ1IjoicmVkNWg0ZDB3IiwiYSI6ImNrems4bzhzMzRrcG4yeHByYTgwN2draHcifQ.356a0A2cfoy3zrhq-IW_rA",
             }
         ).addTo(carte);
+        L.control.scale().addTo(carte);
         carte.setView([45.504755, -73.612572], 14); // Montreal
         return {
             destroy: () => {
