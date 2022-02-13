@@ -15,10 +15,16 @@
                     case "logout":
                         await auth.logout();
                         break;
+                    case "about":
+                        await Browser.open({
+                            url: "http://github.com/marr11317/bhackcycle",
+                        });
+                        break;
                     case "github":
                         await Browser.open({
                             url: "http://github.com/marr11317/bhackcycle",
                         });
+                        break;
                     default:
                         break;
                 }
