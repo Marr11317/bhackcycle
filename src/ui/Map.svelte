@@ -129,6 +129,8 @@
       })),
     };
 
+
+
     database.updateTrip(trip);
     currentTrip.set(null);
 
@@ -142,6 +144,7 @@
         return null;
       }
       user.credits += Math.floor((5 * distance) / 1000);
+      user.trips = [...user.trips, trip];
       return user;
     });
   };

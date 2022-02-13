@@ -1,4 +1,4 @@
-import { collection, doc, setDoc, getDoc, getDocs, getFirestore, DocumentReference } from 'firebase/firestore'
+import { collection, doc, setDoc, getDoc, getDocs, getFirestore, DocumentReference, deleteDoc } from 'firebase/firestore'
 import { rewardConverter, userConverter, tripConverter } from './data_converter'
 
 const db = () => getFirestore()
@@ -39,6 +39,15 @@ const fetchUserTrips = async (userEmail: string): Promise<Trip[]> => {
   return trips.filter(trip => trip.userEmail === userEmail)
 }
 
+const deleteTrip = async (tripId: string) => {
+  const snap = await getDocs(collection(db(), "trips").withConverter(tripConverter))
+  snap.forEach(doc => {
+    if (doc.exists() && doc.data().id === tripId) {
+      deleteDoc(doc.ref);
+    } 
+  });
+}
+
 const fetchAllRewards = async (): Promise<Reward[]> => {
   const rewards: Reward[] = []
 
@@ -47,4 +56,4 @@ const fetchAllRewards = async (): Promise<Reward[]> => {
   return rewards
 }
 
-export default { fetchUser, fetchAllRewards, updateUser, updateTrip, updateReward }
+export default { fetchUser, fetchAllRewards, updateUser, updateTrip, updateReward, deleteTrip }
