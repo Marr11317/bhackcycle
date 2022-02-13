@@ -2,7 +2,12 @@
   import L, { type LatLngLiteral, type LatLngTuple } from "leaflet";
   import { onMount } from "svelte";
   import { Geolocation } from "@capacitor/geolocation";
-  import { addTripEndpoint, currentTrip } from "../app-state";
+  import {
+    addTripEndpoint,
+    computeTripDistance,
+    currentTrip,
+  } from "../app-state";
+import database from "./../database";
 
   let carte: L.Map | null = null;
   let trajetActuel: L.Polyline | null = null;
@@ -72,12 +77,12 @@
     }
 
     const pointList = $currentTrip.geopoints
-    .sort((a, b) => (a.timestamp < b.timestamp ? -1 : 1))
-    .map<[number, number]>((x) => [
-      x.location.latitude,
-      x.location.longitude,
-    ]);
-    
+      .sort((a, b) => (a.timestamp < b.timestamp ? -1 : 1))
+      .map<[number, number]>((x) => [
+        x.location.latitude,
+        x.location.longitude,
+      ]);
+
     L.circleMarker(pointList[pointList.length - 1], {
       color: "red",
       weight: 2,
@@ -91,6 +96,25 @@
     });
     trajetActuel.addTo(carte);
   };
+
+  const stopTrip = () => {
+    if (!$currentTrip) {
+      return;
+    }
+
+    const trip: Trip = {
+      ...$currentTrip,
+      distance: computeTripDistance($currentTrip.geopoints),
+      endTime: new Date(),
+    };
+
+    database.updateTrip(trip);
+    currentTrip.set(null);
+  };
+
+  const startTrip = () => {
+
+  }
 
   onMount(() => {
     setInterval(async () => {
@@ -131,8 +155,21 @@
   />
 </svelte:head>
 
+
 <div class="map" style="height:100%;width:100%;" use:createMap>
-  <div class="leaflet-bottom" />
+  {#if $currentTrip?.geopoints.length}
+    <div class="leaflet-bottom">
+      <ion-fab-button on:click={stopTrip} style="pointer-events: auto;">
+        <ion-icon name="close" />
+      </ion-fab-button>
+    </div>
+  {:else}
+    <div class="leaflet-bottom">
+      <ion-fab-button on:click={startTrip} style="pointer-events: auto;">
+        <ion-icon name="add" />
+      </ion-fab-button>
+    </div>
+  {/if}
 </div>
 
 <style>

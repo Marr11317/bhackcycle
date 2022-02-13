@@ -1,5 +1,6 @@
 <script>
   import { allRewards } from "./../app-state";
+import RewardCard from "./Rewards/RewardCard.svelte";
 </script>
 
 <ion-header translucent>
@@ -11,10 +12,7 @@
 <div>
   {#if $allRewards}
     {#each $allRewards as reward}
-      <div style="border: solid 1px black;">
-        <h3>{reward.name}</h3>
-        <p>{reward.description}</p>
-      </div>
+      <RewardCard reward={reward}/>
     {/each}
   {/if}
 </div>
