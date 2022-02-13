@@ -17,10 +17,10 @@
   </ion-toolbar>
 </ion-header>
 
-<div>
+<ion-content fullscreen>
   {#if $allRewards}
     {#each $allRewards as reward}
       <RewardCard reward={reward}/>
     {/each}
   {/if}
-</div>
+</ion-content>
