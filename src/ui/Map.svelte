@@ -1,195 +1,200 @@
 <script lang="ts">
-    import L from "leaflet";
-    import {onMount} from "svelte";
-    import { Geolocation } from '@capacitor/geolocation';
-    import { addTripEndpoint, currentTrip } from "../app-state";
-import { GeoPoint } from "firebase/firestore/lite";
+    import L, { type LatLngLiteral, type LatLngTuple } from "leaflet";
+    import { onMount } from "svelte";
+    import { Geolocation } from "@capacitor/geolocation";
+    import {
+        addTripEndpoint,
+        computeTripDistance,
+        currentTrip,
+    } from "../app-state";
+    import database from "./../database";
 
-    let carte;
-    let trajetActuel;
+    let carte: L.Map | null = null;
+    let trajetActuel: L.Polyline | null = null;
+    let circleMarker: L.CircleMarker | null = null;
 
-    
-
-    function createMap(container) {
-        
-        let m = L.map(container, {preferCanvas: true });
-        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-            maxZoom: 20,
-            id: 'mapbox/streets-v11',
-            tileSize: 512,
-            zoomOffset: -1,
-            accessToken: 'pk.eyJ1IjoicmVkNWg0ZDB3IiwiYSI6ImNrems4bzhzMzRrcG4yeHByYTgwN2draHcifQ.356a0A2cfoy3zrhq-IW_rA'
-        }).addTo(m);
-        m.setView([45.508888,-73.561668], 14);
-        return m;
-    }
-
-    function createMarker(loc: number[], icon) {
-		// let count = Math.ceil(Math.random() * 25);
-		// let icon = markerIcon(count);
-		let marker = L.marker(loc, {icon});
-		// bindPopup(marker, (m) => {
-		// 	let c = new MarkerPopup({
-		// 		target: m,
-		// 		props: {
-		// 			count
-		// 		}
-		// 	});
-			
-		// 	c.$on('change', ({detail}) => {
-		// 		count = detail;
-		// 		marker.setIcon(markerIcon(count));
-		// 	});
-			
-		// 	return c;
-		// });
-		
-		return marker;
-	}
-
-    function mapAction(container) {
-        carte = createMap(container); 
-        // toolbar.addTo(map);
-        
-        // markerLayers = L.layerGroup()
-        // for(let location of markerLocations) {
-        //     let m = createMarker(location);
-        //     markerLayers.addLayer(m);
-        // }
-        
-        // lineLayers = createLines();
-        
-        // markerLayers.addTo(map);
-        // lineLayers.addTo(map);
+    const getCurrentPosition = async (): Promise<LatLngLiteral> => {
+        const result = await Geolocation.getCurrentPosition();
         return {
-        destroy: () => {
-                // toolbar.remove();
-                carte.remove();
-                carte = null;
-            }
+            lat: result.coords.latitude,
+            lng: result.coords.longitude,
         };
-	}
+    };
 
-    function resizeMap() {
-	    if(carte) { 
-            carte.invalidateSize(); }
-    }
-
-    async function initCurrentTrip() {
-        if(carte) {
-            var position = await Geolocation.getCurrentPosition()
-            var geopoint = {
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude
+    const createMap = (container: HTMLElement) => {
+        carte = L.map(container, { preferCanvas: true });
+        L.tileLayer(
+            "https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}",
+            {
+                attribution:
+                    'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                maxZoom: 20,
+                id: "mapbox/streets-v11",
+                tileSize: 512,
+                zoomOffset: -1,
+                accessToken:
+                    "pk.eyJ1IjoicmVkNWg0ZDB3IiwiYSI6ImNrems4bzhzMzRrcG4yeHByYTgwN2draHcifQ.356a0A2cfoy3zrhq-IW_rA",
             }
-            L.circleMarker([geopoint.latitude, geopoint.longitude], 
-            {
-                color: "red",
-                weight: 2,
-                opacity: 0.7
-            }).addTo(carte);
-            trajetActuel = L.polyline([geopoint.latitude, geopoint.longitude],
-            {
-                color: "red",
-                weight: 3,
-                opacity: 0.5,
-                smoothFactor: 1
-            });
-            trajetActuel.addTo(carte);
-        }
-    }
+        ).addTo(carte);
+        carte.setView([45.508888, -73.561668], 14);
+        return {
+            destroy: () => {
+                carte?.remove();
+                carte = null;
+            },
+        };
+    };
 
-    function resumeCurrentTrip() {
-        if(carte) {
-            var pointList = $currentTrip.geopoints
-                .sort((a, b) => a.timestamp < b.timestamp ? -1 : 1)
-                .map( x => [x.location.latitude, x.location.longitude]);
-            var origin = pointList[0];
-            L.circleMarker(origin, 
-            {
-                color: "red",
-                weight: 2,
-                opacity: 0.7
-            }).addTo(carte);
-            trajetActuel = L.polyline(pointList,
-            {
-                color: "red",
-                weight: 3,
-                opacity: 0.5,
-                smoothFactor: 1
-            });
-            trajetActuel.addTo(carte);
-        }
-    }
+    const resizeMap = () => carte?.invalidateSize();
 
-    async function updateTrip() {
-        if($currentTrip.geopoints.length == 0) {
-            initCurrentTrip()
+    const initCurrentTrip = async (currentPosition: LatLngLiteral) => {
+        if (!carte) {
+            return;
         }
-        var position = await Geolocation.getCurrentPosition()
-        var geopoint = {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude
+
+        circleMarker?.removeFrom(carte);
+        trajetActuel?.removeFrom(carte);
+
+        circleMarker = L.circleMarker(currentPosition, {
+            color: "red",
+            weight: 2,
+            opacity: 0.7,
+        });
+        trajetActuel = L.polyline([currentPosition], {
+            color: "red",
+            weight: 3,
+            opacity: 0.5,
+            smoothFactor: 1,
+        });
+
+        circleMarker.addTo(carte);
+        trajetActuel.addTo(carte);
+    };
+
+    const drawCurrentTrip = () => {
+        if (!carte || !$currentTrip?.geopoints.length) {
+            return;
         }
-        addTripEndpoint(geopoint);
-        trajetActuel.addLatLng([position.coords.latitude, position.coords.longitude]);
-    }
+
+        const pointList = $currentTrip.geopoints
+            .sort((a, b) => (a.timestamp < b.timestamp ? -1 : 1))
+            .map<[number, number]>((x) => [
+                x.location.latitude,
+                x.location.longitude,
+            ]);
+
+        circleMarker = L.circleMarker(pointList[pointList.length - 1], {
+            color: "red",
+            weight: 2,
+            opacity: 0.7,
+        });
+        circleMarker.addTo(carte);
+        trajetActuel = L.polyline(pointList, {
+            color: "red",
+            weight: 3,
+            opacity: 0.5,
+            smoothFactor: 1,
+        });
+        trajetActuel.addTo(carte);
+    };
+
+    const stopTrip = () => {
+        if (!$currentTrip) {
+            return;
+        }
+
+        const trip: Trip = {
+            ...$currentTrip,
+            distance: computeTripDistance($currentTrip.geopoints),
+            endTime: new Date(),
+        };
+
+        database.updateTrip(trip);
+        currentTrip.set(null);
+        trajetActuel.removeFrom(carte);
+        circleMarker.removeFrom(carte)
+    };
+
+    const startTrip = async () => {
+        currentTrip.set({
+            id: '1',
+            userEmail: 'suptom3@gmail.com',
+            startTime: new Date(),
+            transportType: 'velo',
+            geopoints: []
+        })
+        const currentPosition = await getCurrentPosition();
+        initCurrentTrip(currentPosition);
+    };
 
     onMount(() => {
-            setInterval(() => {
-                if($currentTrip) {
-                    updateTrip();
-                }
-            }, 3000);
-            setTimeout(
-                async () => {
-                    const initialView = await Geolocation.getCurrentPosition();
-                    carte.setView([ initialView.coords.latitude, initialView.coords.longitude]);
-                    console.log($currentTrip)
-                    if($currentTrip?.geopoints.length) {
-                        resumeCurrentTrip();
-                    }
-                    resizeMap();
-                },
-            300);
-        }
-       
-    )
+        setInterval(async () => {
+            if (!$currentTrip) {
+                console.log("no trip for you...")
+                return;
+            }
+            const currentPosition = await getCurrentPosition();
+            addTripEndpoint({
+                latitude: currentPosition.lat,
+                longitude: currentPosition.lng,
+            });
 
+            if ($currentTrip.geopoints.length == 0) {
+                initCurrentTrip(currentPosition);
+            } else {
+                trajetActuel?.addLatLng(currentPosition);
+            }
+        }, 3000);
+        setTimeout(async () => {
+            const currentPosition = await getCurrentPosition();
+            carte?.setView(currentPosition);
+            if ($currentTrip?.geopoints.length) {
+                drawCurrentTrip();
+            }
+            resizeMap();
+        }, 300);
+    });
 </script>
 
 <svelte:window on:resize={resizeMap} />
 
 <svelte:head>
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
-    integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
-    crossorigin=""
-  />
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+        integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+        crossorigin=""
+    />
 </svelte:head>
 
-<style>
-	.map :global(.marker-text) {
-		width:100%;
-		text-align:center;
-		font-weight:600;
-		background-color:#444;
-		color:#EEE;
-		border-radius:0.5rem;
-	}
-	
-	.map :global(.map-marker) {
-		width:30px;
-		transform:translateX(-50%) translateY(-25%);
-	}
-</style>
-
-
-
-<div class="map" style="height:100%;width:100%;" use:mapAction >
-    <div class="leaflet-bottom">
-        <ion-fab-button on:click={initCurrentTrip()}></ion-fab-button>
-    </div>
+<div class="map" style="height:100%;width:100%;" use:createMap>
+    {#if $currentTrip?.geopoints.length}
+        <div class="leaflet-bottom">
+            <ion-fab-button on:click={stopTrip} style="pointer-events: auto;">
+                <ion-icon name="close" />
+            </ion-fab-button>
+        </div>
+    {:else}
+        <div class="leaflet-bottom">
+            <ion-fab-button on:click={startTrip} style="pointer-events: auto;">
+                <ion-icon name="add" />
+            </ion-fab-button>
+        </div>
+    {/if}
 </div>
+
+<style>
+    .map :global(.marker-text) {
+        width: 100%;
+        text-align: center;
+        font-weight: 600;
+        background-color: #444;
+        color: #eee;
+        border-radius: 0.5rem;
+    }
+
+    .map :global(.map-marker) {
+        width: 30px;
+        transform: translateX(-50%) translateY(-25%);
+    }
+</style>
