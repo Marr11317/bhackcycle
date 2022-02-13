@@ -23,7 +23,7 @@
         slot="start"
     />
     <ion-label on:click={viewTrip}>
-        {computeTripDistance(trip.geopoints)}
+        {computeTripDistance(trip.geopoints).toLocaleString(undefined, {maximumFractionDigits:0}) + " m"}
     </ion-label>
 
     <ion-button on:click={() => {
