@@ -103,10 +103,15 @@
     trajetActuel.addTo(carte);
   };
 
+  let recordId: number | null = null;
   const stopTrip = () => {
-    if (!$currentTrip) {
-      return;
+    if (recordId) {
+      clearInterval(recordId);
+      recordId = null;
     }
+
+    if (!$currentTrip)
+      return;
 
     const distance = computeTripDistance($currentTrip.geopoints);
 
@@ -152,14 +157,12 @@
 
     const currentPosition = await getCurrentPosition();
     initCurrentTrip(currentPosition);
-  };
 
-  onMount(() => {
-    setInterval(async () => {
-      const currentPosition = await getCurrentPosition();
-      if (!$currentTrip) {
+    recordId = window.setInterval(async () => {
+      if (!$currentTrip)
         return;
-      }
+
+      const currentPosition = await getCurrentPosition();
       addTripEndpoint({
         latitude: currentPosition.lat,
         longitude: currentPosition.lng,
@@ -171,6 +174,9 @@
         trajetActuel?.addLatLng(currentPosition);
       }
     }, 3000);
+  };
+
+  onMount(() => {
     setTimeout(async () => {
       const currentPosition = await getCurrentPosition();
       carte?.setView(currentPosition);
