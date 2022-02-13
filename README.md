@@ -1,4 +1,4 @@
-# bhackcycle
+# Pricycle
 
 An app where you get paid to save carbon.
 
