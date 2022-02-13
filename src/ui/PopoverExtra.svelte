@@ -1,51 +1,37 @@
-<script>
+<script lang="ts">
     let overlayElement = document.querySelector("ion-popover");
-    const closeOverlay = (data) => {
+    const closeOverlay = (data: string) => {
         overlayElement.dismiss(data);
     };
 </script>
 
-<ion-list>
-    <ion-list-header>Ionic</ion-list-header>
+<ion-list lines="n">
     <ion-item
         button
         on:click={() => {
-            closeOverlay("Learn Ionic");
+            closeOverlay("logout");
         }}
     >
-        Learn Ionic
+        Logout
+        <ion-icon name="log-out-outline" slot="end" />
     </ion-item>
     <ion-item
         button
         on:click={() => {
-            closeOverlay("Documentation");
+            closeOverlay("about");
         }}
     >
-        Documentation
+        about
+        <ion-icon name="information-circle-outline" slot="end" />
     </ion-item>
     <ion-item
+        lines="none"
         button
         on:click={() => {
-            closeOverlay("Showcase");
-        }}
-    >
-        Showcase
-    </ion-item>
-    <ion-item
-        button
-        on:click={() => {
-            closeOverlay("Github");
+            closeOverlay("github");
         }}
     >
         GitHub Repo
+        <ion-icon name="logo-github" slot="end" />
     </ion-item>
 </ion-list>
-
-<ion-button
-    expand="block"
-    on:click={() => {
-        closeOverlay(undefined);
-    }}
->
-    Close
-</ion-button>

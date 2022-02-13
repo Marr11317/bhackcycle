@@ -2,21 +2,28 @@
     import PopoverExtra from "./PopoverExtra.svelte";
     import { IonicShowPopover } from "./IonicControllers";
 
+    import auth from "../auth";
+
     function showPopover(event: Event) {
-        console.log("here");
         IonicShowPopover(event, "popover-extra", PopoverExtra, {
             firstName: "Douglas",
             lastName: "Adams",
             middleInitial: "N",
-        }).then(console.log);
-    };
+        }).then(async (result) => {
+            console.log(
+                "🚀 ~ file: Dashboard.svelte ~ line 13 ~ showPopover ~ result",
+                result
+            );
+
+            if (result.data == "logout") {
+                await auth.logout();
+            }
+        });
+    }
 </script>
 
 <ion-header translucent>
     <ion-toolbar>
-        <ion-buttons slot="start">
-            <ion-menu-button auto-hide="false" />
-        </ion-buttons>
         <ion-buttons slot="primary">
             <ion-button on:click={showPopover}>
                 <ion-icon
@@ -30,5 +37,3 @@
         <ion-title>Dashboard</ion-title>
     </ion-toolbar>
 </ion-header>
-
-<h1 class="ma">Dashboard Content</h1>

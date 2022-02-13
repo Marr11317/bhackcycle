@@ -4,7 +4,9 @@
   import auth from "../auth";
   import { onMount } from "svelte";
   import { initializeApp as initializeFirebaseApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+  import { getAuth } from "firebase/auth";
+
+  import { logged } from "../app-state";
 
   onMount(() => {
     initializeFirebaseApp({
@@ -16,14 +18,13 @@ import { getAuth } from "firebase/auth";
       appId: "1:410454368204:web:16fa9750c1621761564769",
     });
 
-    getAuth().onAuthStateChanged(user => {
-      logged = !!user
-      isInitialized = true
-    })
+    getAuth().onAuthStateChanged((user) => {
+      $logged = !!user;
+      isInitialized = true;
+    });
   });
 
   let isInitialized = false;
-  let logged: boolean | null = null;
   let signup = false;
   let currentError = "";
 
@@ -53,14 +54,14 @@ import { getAuth } from "firebase/auth";
     if (signup) {
       if (await auth.signUp(name, email, password)) {
         currentError = "";
-        logged = true;
+        $logged = true;
       } else {
         currentError = "Signup failed";
       }
     } else {
       if (await auth.login(email, password)) {
         currentError = "";
-        logged = true;
+        $logged = true;
       } else {
         currentError = "Invalid email or password";
       }
@@ -70,7 +71,7 @@ import { getAuth } from "firebase/auth";
 
 <ion-app>
   {#if isInitialized}
-    {#if !logged}
+    {#if !$logged}
       <LoginScreen errorNote={currentError} bind:signup on:submit={submit} />
     {:else}
       <App />
