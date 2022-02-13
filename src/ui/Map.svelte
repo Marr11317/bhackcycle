@@ -1,4 +1,6 @@
 <script lang="ts">
+  import "../../node_modules/leaflet/dist/leaflet.css";
+
   import L, { type LatLngLiteral, type LatLngTuple } from "leaflet";
   import { onMount } from "svelte";
   import { Geolocation } from "@capacitor/geolocation";
@@ -172,15 +174,6 @@
 </script>
 
 <svelte:window on:resize={resizeMap} />
-
-<svelte:head>
-  <link
-    rel="stylesheet"
-    href="../../node_modules/dist/leaflet.css"
-    integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
-    crossorigin=""
-  />
-</svelte:head>
 
 <div class="map" style="height:100%;width:100%;" use:createMap>
   {#if $currentTrip}
