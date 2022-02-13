@@ -33,6 +33,7 @@
     </ion-toolbar>
 </ion-header>
 <ion-content>
+    <div class="summary-map"></div>
     <ion-list>
         {#if $loadedUser}
             <ion-list-header>
